@@ -1,0 +1,1246 @@
+[gd_scene load_steps=29 format=3 uid="uid://mkh7y7yikxqm"]
+
+[sub_resource type="GDScript" id="4"]
+script/source = "@tool
+extends Control
+
+# adjustment
+var adjustment_show = false : set = set_adjustment
+var adjustment_brightnes = 1.0
+var adjustment_contrast = 1.0
+var adjustment_saturation = 1.0
+
+# white_balance
+var white_balance_show = false : set = set_white_balance
+var white_balance_temperature = 0.0
+#var white_balance_warm_color = preload(\"res://Post Processing tool/assets/warm_color.res\")
+#var white_balance_cool_color = preload(\"res://Post Processing tool/assets/cool_color.res\")
+var white_balance_layer = 1
+var white_balance_tint = 0.0
+
+# color splash
+var color_splash_show = false : set = set_color_splash
+var color_splash_layer = 1
+var color_splash_color = Color()
+var color_splash_strength = 0.2
+
+# bloom
+var bloom_show = false : set = _set_bloom
+var bloom_layer = 1
+var bloom_radius = 1
+var bloom_threshold = 1
+var bloom_intensity = 1
+
+# chromatc_aberration
+var chromatc_aberration_show = false : set = set_chromatc_aberration
+var chromatc_aberration_strength = 0.5
+var chromatc_aberration_layer = 1
+
+# noise
+var noise_show = false : set = set_noise
+var noise_layer = 1
+var noise_power = 0.01
+var noise_seed = 80
+var noise_speed = 0.1
+
+# glich
+var glitch_show = false : set = _set_glich
+var glitch_power = 0.03
+var glitch_rate = 0.2
+var glitch_speed = 5.0
+var glitch_block_size = 30.5
+var glitch_color_rate = 0.01
+
+# fog overlay
+var fog_overlay_show = false : set = _set_fog_overlay
+var fog_overlay_layer = 1
+var fog_overlay_octaves = 4
+var fog_overlay_starting_amplitude = 0.5
+var fog_overlay_starting_frequency = 1.0
+var fog_overlay_shift = -0.2
+var fog_overlay_velocity = Vector2(1, 1)
+var fog_overlay_color = Color(0,0,0,1)
+var fog_overlay_noise_texture = null
+
+# vignette
+var vignette_show = false : set = set_vignette
+var vignette_player_pos = Vector2(0.5, 0.5)
+var vignette_color = Color()
+var vignette_multiplier = 1.0
+var vignette_scale = 0.5
+var vignette_softness = 1.0
+var vignette_layer = 1
+
+func _set_fog_overlay(value):
+	fog_overlay_show = value
+	notify_property_list_changed()
+	pass
+
+func _set_glich(value):
+	glitch_show = value
+	notify_property_list_changed()
+	pass
+
+func _set_bloom(value):
+	bloom_show = value
+	notify_property_list_changed()
+	pass
+
+func set_vignette(value):
+	vignette_show = value
+	notify_property_list_changed()
+	pass
+
+func set_chromatc_aberration(value):
+	chromatc_aberration_show = value
+	notify_property_list_changed()
+	pass
+
+func set_white_balance(value):
+	white_balance_show = value
+	notify_property_list_changed()
+	pass
+
+func set_noise(value):
+	noise_show = value
+	notify_property_list_changed()
+	pass
+
+func set_adjustment(value):
+	adjustment_show = value
+	notify_property_list_changed()
+	pass
+
+func set_color_splash(value):
+	color_splash_show = value
+	notify_property_list_changed()
+	pass
+
+func _get_property_list():
+	var properties = []
+	
+	# make the category
+	properties.append({
+		name = \"Effects\",
+		type = TYPE_NIL,
+		usage = PROPERTY_USAGE_CATEGORY
+	})
+	
+	for i in get_children():
+		if i.has_method(\"main\"):
+			properties = _get_properties_form_node(i.name, properties)
+	
+	
+	return properties
+
+func _get_properties_form_node(_node_name, properties):
+	var properties_in_node = []
+	properties_in_node = get_node(NodePath(_node_name)).main()
+	for i in properties_in_node:
+		properties.append(i)
+	return properties
+"
+
+[sub_resource type="GDScript" id="5"]
+script/source = "@tool
+extends Control
+
+# warning-ignore:unused_argument
+func _physics_process(delta):
+#	$BackBufferCopy/ColorRect.size = size
+	main()
+
+func main():
+	var properties = []
+	var node = $BackBufferCopy/ColorRect
+	
+	# inspactore exports 
+	properties.append(
+		{name = \"Adjustment\",
+		type = TYPE_NIL,
+		hint_string = \"adjustment\",
+		usage = PROPERTY_USAGE_GROUP})
+	properties.append(
+		{name = \"adjustment_show\",
+		type = TYPE_BOOL,
+		usage = PROPERTY_USAGE_DEFAULT})
+	
+	node.visible = get_parent().adjustment_show
+	
+	properties.append(
+		{name = \"adjustment_brightnes\",
+		type = TYPE_FLOAT,
+		usage = PROPERTY_USAGE_DEFAULT})
+	properties.append(
+		{name = \"adjustment_contrast\",
+		type = TYPE_FLOAT,
+		usage = PROPERTY_USAGE_DEFAULT})
+	properties.append(
+		{name = \"adjustment_saturation\",
+		type = TYPE_FLOAT,
+		usage = PROPERTY_USAGE_DEFAULT})
+	
+	# main values setup for effect
+	node.material.set_shader_parameter(\"brightness\", get_parent().adjustment_brightnes)
+	node.material.set_shader_parameter(\"contrast\", get_parent().adjustment_contrast)
+	node.material.set_shader_parameter(\"saturation\", get_parent().adjustment_saturation)
+	
+	return properties
+"
+
+[sub_resource type="Shader" id="1"]
+code = "shader_type canvas_item;
+
+uniform float brightness = 1.0;
+uniform float contrast = 1.0;
+uniform float saturation = 1.0;
+uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
+
+void fragment() {
+    vec3 c = textureLod(SCREEN_TEXTURE, SCREEN_UV, 0.0).rgb;
+
+    c.rgb = mix(vec3(0.0), c.rgb, brightness);
+    c.rgb = mix(vec3(0.5), c.rgb, contrast);
+    c.rgb = mix(vec3(dot(vec3(1.0), c.rgb) * 0.33333), c.rgb, saturation);
+
+    COLOR.rgb = c;
+}"
+
+[sub_resource type="ShaderMaterial" id="6"]
+shader = SubResource("1")
+shader_parameter/brightness = 1.0
+shader_parameter/contrast = 1.0
+shader_parameter/saturation = 1.0
+
+[sub_resource type="GDScript" id="7"]
+script/source = "@tool
+extends Control
+
+# warning-ignore:unused_argument
+func _physics_process(delta):
+#	$BackBufferCopy/ColorRect.size = size
+	main()
+
+func main():
+	var properties = []
+	var node = $BackBufferCopy/ColorRect
+	
+	# inspactore exports 
+	properties.append(
+		{name = \"Color Splash\",
+		type = TYPE_NIL,
+		hint_string = \"color_splash\",
+		usage = PROPERTY_USAGE_GROUP})
+	properties.append(
+		{name = \"color_splash_show\",
+		type = TYPE_BOOL,
+		usage = PROPERTY_USAGE_DEFAULT})
+	
+	node.visible = get_parent().color_splash_show
+	
+	properties.append(
+		{name = \"color_splash_color\",
+		type = TYPE_COLOR,
+		usage = PROPERTY_USAGE_DEFAULT})
+	properties.append(
+		{name = \"color_splash_strength\",
+		type = TYPE_FLOAT,
+		usage = PROPERTY_USAGE_DEFAULT})
+	
+	# main values setup for effect
+	node.material.set_shader_parameter(\"color\", get_parent().color_splash_color)
+	node.material.set_shader_parameter(\"strength\", get_parent().color_splash_strength)
+	
+	return properties
+
+"
+
+[sub_resource type="Shader" id="8"]
+code = "shader_type canvas_item;
+
+uniform bool hide = false;
+uniform vec4 color : source_color = vec4(1);
+uniform float strength = 0.2;
+uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
+
+void fragment(){
+	vec4 pixel = texture(SCREEN_TEXTURE, SCREEN_UV);
+	COLOR = pixel;
+	if (hide == false){ 
+		vec3 grayscale_value = vec3(dot(pixel.rgb, vec3(0.299, 0.587, 0.114)));
+		float range = 1.0 - step(distance(pixel.rgb, color.rgb), strength);
+		COLOR.rgb = mix(pixel.rgb, grayscale_value, range);
+	}
+	
+}"
+
+[sub_resource type="ShaderMaterial" id="9"]
+shader = SubResource("8")
+shader_parameter/hide = false
+shader_parameter/color = Color(0, 0, 0, 1)
+shader_parameter/strength = 0.2
+
+[sub_resource type="GDScript" id="10"]
+script/source = "@tool
+extends Control
+
+# warning-ignore:unused_argument
+func _physics_process(delta):
+#	$BackBufferCopy/ColorRect.size = size
+	main()
+
+func main():
+	var properties = []
+	var node = $BackBufferCopy/ColorRect
+	
+	# inspactore exports 
+	properties.append(
+		{name = \"Bloom\",
+		type = TYPE_NIL,
+		hint_string = \"bloom_\",
+		usage = PROPERTY_USAGE_GROUP})
+	properties.append(
+		{name = \"bloom_show\",
+		type = TYPE_BOOL,
+		usage = PROPERTY_USAGE_DEFAULT})
+	
+	node.visible = get_parent().bloom_show
+	
+	properties.append(
+		{name = \"bloom_radius\",
+		type = TYPE_FLOAT,
+		usage = PROPERTY_USAGE_DEFAULT})
+	properties.append(
+		{name = \"bloom_threshold\",
+		type = TYPE_FLOAT,
+		usage = PROPERTY_USAGE_DEFAULT})
+	properties.append(
+		{name = \"bloom_intensity\",
+		type = TYPE_FLOAT,
+		usage = PROPERTY_USAGE_DEFAULT})
+		
+	# main values setup for effect
+	node.material.set_shader_parameter(\"bloomRadius\", get_parent().bloom_radius)
+	node.material.set_shader_parameter(\"bloomThreshold\", get_parent().bloom_threshold)
+	node.material.set_shader_parameter(\"bloomIntensity\", get_parent().bloom_intensity)
+	
+	return properties
+	pass
+"
+
+[sub_resource type="Shader" id="11"]
+code = "shader_type canvas_item;
+
+uniform float bloomRadius = 1.0;
+uniform float bloomThreshold = 1.0;
+uniform float bloomIntensity = 1.0;
+uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
+
+vec3 GetBloomPixel(sampler2D tex, vec2 uv, vec2 texPixelSize) {
+	vec2 uv2 = floor(uv / texPixelSize) * texPixelSize;
+	uv2 += texPixelSize * .001;
+	vec3 tl = max(texture(tex, uv2).rgb - bloomThreshold, 0.0);
+	vec3 tr = max(texture(tex, uv2 + vec2(texPixelSize.x, 0.0)).rgb - bloomThreshold, 0.0);
+	vec3 bl = max(texture(tex, uv2 + vec2(0.0, texPixelSize.y)).rgb - bloomThreshold, 0.0);
+	vec3 br = max(texture(tex, uv2 + vec2(texPixelSize.x, texPixelSize.y)).rgb - bloomThreshold, 0.0);
+	vec2 f = fract( uv / texPixelSize );
+
+	vec3 tA = mix( tl, tr, f.x );
+	vec3 tB = mix( bl, br, f.x );
+
+	return mix( tA, tB, f.y );
+}
+
+vec3 GetBloom(sampler2D tex, vec2 uv, vec2 texPixelSize) {
+	vec3 bloom = vec3(0.0);
+	vec2 unchecked = vec2(1) * texPixelSize * bloomRadius;
+	bloom += GetBloomPixel(tex, uv + unchecked * vec2(-1, -1), texPixelSize * bloomRadius) * 0.292893;
+	bloom += GetBloomPixel(tex, uv + unchecked * vec2(-1, 0), texPixelSize * bloomRadius) * 0.5;
+	bloom += GetBloomPixel(tex, uv + unchecked * vec2(-1, 1), texPixelSize * bloomRadius) * 0.292893;
+	bloom += GetBloomPixel(tex, uv + unchecked * vec2(0, -1), texPixelSize * bloomRadius) * 0.5;
+	bloom += GetBloomPixel(tex, uv + unchecked * vec2(0, 0), texPixelSize * bloomRadius) * 1.0;
+	bloom += GetBloomPixel(tex, uv + unchecked * vec2(0, 1), texPixelSize * bloomRadius) * 0.5;
+	bloom += GetBloomPixel(tex, uv + unchecked * vec2(1, -1), texPixelSize * bloomRadius) * 0.292893;
+	bloom += GetBloomPixel(tex, uv + unchecked * vec2(1, 0), texPixelSize * bloomRadius) * 0.5;
+	bloom += GetBloomPixel(tex, uv + unchecked * vec2(1, 1), texPixelSize * bloomRadius) * 0.292893;
+	bloom /= 4.171573f;
+	return bloom;
+}
+
+void fragment() {
+	vec4 col = texture(SCREEN_TEXTURE, SCREEN_UV);
+	vec3 bloom = GetBloom(SCREEN_TEXTURE, SCREEN_UV, SCREEN_PIXEL_SIZE);
+	col.rgb += bloom * bloomIntensity;
+	COLOR = col;
+}"
+
+[sub_resource type="ShaderMaterial" id="12"]
+shader = SubResource("11")
+shader_parameter/bloomRadius = 1
+shader_parameter/bloomThreshold = 0.5
+shader_parameter/bloomIntensity = 1
+
+[sub_resource type="GDScript" id="16"]
+script/source = "@tool
+extends Control
+
+# warning-ignore:unused_argument
+func _physics_process(delta):
+	main()
+
+func main():
+	var properties = []
+	var node = $ColorRect
+	
+	# inspactore exports 
+	properties.append(
+		{name = \"Noise\",
+		type = TYPE_NIL,
+		hint_string = \"noise\",
+		usage = PROPERTY_USAGE_GROUP})
+	properties.append(
+		{name = \"noise_show\",
+		type = TYPE_BOOL,
+		usage = PROPERTY_USAGE_DEFAULT})
+	
+	node.visible = get_parent().noise_show
+	
+	properties.append(
+		{name = \"noise_power\",
+		type = TYPE_FLOAT,
+		usage = PROPERTY_USAGE_DEFAULT})
+	properties.append(
+		{name = \"noise_seed\",
+		type = TYPE_FLOAT,
+		usage = PROPERTY_USAGE_DEFAULT})
+	properties.append(
+		{name = \"noise_speed\",
+		type = TYPE_FLOAT,
+		usage = PROPERTY_USAGE_DEFAULT})
+		
+	# main values setup for effect
+	
+	node.material.set_shader_parameter(\"seed\", get_parent().noise_seed)
+	node.material.set_shader_parameter(\"power\", get_parent().noise_power)
+	node.material.set_shader_parameter(\"speed\", get_parent().noise_speed / 10)
+	
+	return properties
+"
+
+[sub_resource type="Shader" id="17"]
+code = "/*
+	砂嵐エフェクト by あるる（きのもと 結衣）
+	Screen Noise Effect Shader by Yui Kinomoto @arlez80
+	from https://godotshaders.com/shader/screen-noise-effect-shader/
+	MIT License
+*/
+shader_type canvas_item;
+
+uniform float seed = 81.0;
+uniform float power : hint_range( 0.0, 1.0 ) = 0.03;
+uniform float speed = 0.0;
+uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
+
+vec2 random( vec2 pos )
+{ 
+	return fract(
+		sin(
+			vec2(
+				dot(pos, vec2(12.9898,78.233))
+			,	dot(pos, vec2(-148.998,-65.233))
+			)
+		) * 43758.5453
+	);
+}
+
+void fragment( )
+{
+	vec2 uv = SCREEN_UV + ( random( UV + vec2( seed - TIME * speed, TIME * speed ) ) - vec2( 0.5, 0.5 ) ) * power;
+	COLOR = textureLod(SCREEN_TEXTURE, uv, 0.0);
+}
+"
+
+[sub_resource type="ShaderMaterial" id="18"]
+shader = SubResource("17")
+shader_parameter/seed = 80
+shader_parameter/power = 0.01
+shader_parameter/speed = 0.1
+
+[sub_resource type="GDScript" id="13"]
+script/source = "@tool
+extends Control
+
+# warning-ignore:unused_argument
+func _physics_process(delta):
+#	$BackBufferCopy/ColorRect.size = size
+	main()
+
+func main():
+	var properties = []
+	var node = $BackBufferCopy/ColorRect
+	
+	# inspactore exports 
+	properties.append(
+		{name = \"Chromatc Aberration\",
+		type = TYPE_NIL,
+		hint_string = \"chromatc_aberration_\",
+		usage = PROPERTY_USAGE_GROUP})
+	properties.append(
+		{name = \"chromatc_aberration_show\",
+		type = TYPE_BOOL,
+		usage = PROPERTY_USAGE_DEFAULT})
+	
+	node.visible = get_parent().chromatc_aberration_show
+	
+	properties.append(
+		{name = \"chromatc_aberration_strength\",
+		type = TYPE_FLOAT,
+		usage = PROPERTY_USAGE_DEFAULT})
+	
+	# main values setup for effect
+	node.material.set_shader_parameter(\"strength\", get_parent().chromatc_aberration_strength)
+	
+	return properties
+"
+
+[sub_resource type="Shader" id="14"]
+code = "shader_type canvas_item;
+
+uniform sampler2D offset_image : hint_default_white;
+uniform float strength = 1.0;
+uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
+
+void fragment() {
+	vec4 output = texture(SCREEN_TEXTURE, SCREEN_UV);
+	
+	float shift = strength * texture(offset_image, SCREEN_UV).r / 100.0;
+	output.r = texture(SCREEN_TEXTURE, vec2(SCREEN_UV.x + shift, SCREEN_UV.y)).r;
+	output.g = texture(SCREEN_TEXTURE, SCREEN_UV).g;
+	output.b = texture(SCREEN_TEXTURE, vec2(SCREEN_UV.x - shift, SCREEN_UV.y)).b;
+	
+	COLOR = output;
+}"
+
+[sub_resource type="ShaderMaterial" id="15"]
+shader = SubResource("14")
+shader_parameter/strength = 0.5
+
+[sub_resource type="GDScript" id="19"]
+script/source = "@tool
+extends Control
+
+# warning-ignore:unused_argument
+func _physics_process(delta):
+	main()
+
+func main():
+	
+	var properties = []
+	var node = $ColorRect
+	
+	# inspactore exports 
+	properties.append(
+		{name = \"Glitch\",
+		type = TYPE_NIL,
+		hint_string = \"glitch\",
+		usage = PROPERTY_USAGE_GROUP})
+	properties.append(
+		{name = \"glitch_show\",
+		type = TYPE_BOOL,
+		usage = PROPERTY_USAGE_DEFAULT})
+	
+	node.visible = get_parent().glitch_show
+	
+	properties.append(
+		{name = \"glitch_power\",
+		type = TYPE_FLOAT,
+		usage = PROPERTY_USAGE_DEFAULT})
+	properties.append(
+		{name = \"glitch_rate\",
+		type = TYPE_FLOAT,
+		usage = PROPERTY_USAGE_DEFAULT})
+	properties.append(
+		{name = \"glitch_speed\",
+		type = TYPE_FLOAT,
+		usage = PROPERTY_USAGE_DEFAULT})
+	properties.append(
+		{name = \"glitch_block_size\",
+		type = TYPE_FLOAT,
+		usage = PROPERTY_USAGE_DEFAULT})
+	properties.append(
+		{name = \"glitch_color_rate\",
+		type = TYPE_FLOAT,
+		usage = PROPERTY_USAGE_DEFAULT})
+	
+	# main values setup for effect
+	node.material.set_shader_parameter(\"shake_power\", get_parent().glitch_power)
+	node.material.set_shader_parameter(\"shake_rate\", get_parent().glitch_rate)
+	node.material.set_shader_parameter(\"shake_speed\", get_parent().glitch_speed)
+	node.material.set_shader_parameter(\"shake_block_size\", get_parent().glitch_block_size)
+	node.material.set_shader_parameter(\"shake_color_rate\", get_parent().glitch_color_rate)
+	
+	return properties
+"
+
+[sub_resource type="Shader" id="3"]
+code = "/*
+	Glitch Effect Shader by Yui Kinomoto @arlez80
+*/
+
+shader_type canvas_item;
+
+// 振動の強さ
+uniform float shake_power = 0.03;
+// 振動率
+uniform float shake_rate : hint_range( 0.0, 1.0 ) = 0.2;
+// 振動速度
+uniform float shake_speed = 5.0;
+// 振動ブロックサイズ
+uniform float shake_block_size = 30.5;
+// 色の分離率
+uniform float shake_color_rate : hint_range( 0.0, 1.0 ) = 0.01;
+
+uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
+
+float random( float seed )
+{
+	return fract( 543.2543 * sin( dot( vec2( seed, seed ), vec2( 3525.46, -54.3415 ) ) ) );
+}
+
+void fragment( )
+{
+	float enable_shift = float(
+		random( trunc( TIME * shake_speed ) )
+	<	shake_rate
+	);
+
+	vec2 fixed_uv = SCREEN_UV;
+	fixed_uv.x += (
+		random(
+			( trunc( SCREEN_UV.y * shake_block_size ) / shake_block_size )
+		+	TIME
+		) - 0.5
+	) * shake_power * enable_shift;
+
+	vec4 pixel_color = texture( SCREEN_TEXTURE, fixed_uv );
+	pixel_color.r = mix(
+		pixel_color.r
+	,	texture( SCREEN_TEXTURE, fixed_uv + vec2( shake_color_rate, 0.0 ) ).r
+	,	enable_shift
+	);
+	pixel_color.b = mix(
+		pixel_color.b
+	,	texture( SCREEN_TEXTURE, fixed_uv + vec2( -shake_color_rate, 0.0 ) ).b
+	,	enable_shift
+	);
+	COLOR = pixel_color;
+}
+"
+
+[sub_resource type="ShaderMaterial" id="20"]
+shader = SubResource("3")
+shader_parameter/shake_power = 0.03
+shader_parameter/shake_rate = 0.2
+shader_parameter/shake_speed = 5.0
+shader_parameter/shake_block_size = 30.5
+shader_parameter/shake_color_rate = 0.01
+
+[sub_resource type="GDScript" id="21"]
+script/source = "@tool
+extends Control
+
+# warning-ignore:unused_argument
+func _physics_process(delta):
+	main()
+
+func main():
+	var properties = []
+	var node = $ColorRect
+	
+	# inspactore exports
+	properties.append(
+		{name = \"fog_overlay\",
+		type = TYPE_NIL,
+		hint_string = \"fog_overlay\",
+		usage = PROPERTY_USAGE_GROUP})
+	properties.append(
+		{name = \"fog_overlay_show\",
+		type = TYPE_BOOL,
+		usage = PROPERTY_USAGE_DEFAULT})
+	
+	node.visible = get_parent().fog_overlay_show
+	
+	properties.append(
+		{name = \"fog_overlay_octaves\",
+		type = TYPE_INT,
+		usage = PROPERTY_USAGE_DEFAULT})
+	properties.append(
+		{name = \"fog_overlay_starting_amplitude\",
+		type = TYPE_FLOAT,
+		usage = PROPERTY_USAGE_DEFAULT})
+	properties.append(
+		{name = \"fog_overlay_starting_frequency\",
+			type = TYPE_FLOAT,
+			usage = PROPERTY_USAGE_DEFAULT})
+	properties.append(
+		{name = \"fog_overlay_shift\",
+		type = TYPE_FLOAT,
+		usage = PROPERTY_USAGE_DEFAULT})
+	properties.append(
+		{name = \"fog_overlay_velocity\",
+		type = TYPE_VECTOR2,
+		usage = PROPERTY_USAGE_DEFAULT})
+	properties.append(
+		{name = \"fog_overlay_color\",
+		type = TYPE_COLOR,
+		usage = PROPERTY_USAGE_DEFAULT})
+	
+	properties.append(
+		{name = \"fog_overlay_noise_texture\",
+		type = TYPE_OBJECT,
+		hint = PROPERTY_HINT_RESOURCE_TYPE,
+		hint_string = \"Texture2D\"
+		})
+	
+	# main values setup for effect
+	node.material.set_shader_parameter(\"octaves\", get_parent().fog_overlay_octaves)
+	get_parent().fog_overlay_starting_amplitude = clamp(get_parent().fog_overlay_starting_amplitude, 0, .5)
+	node.material.set_shader_parameter(\"starting_amplitude\", get_parent().fog_overlay_starting_amplitude)
+	node.material.set_shader_parameter(\"starting_frequency\", get_parent().fog_overlay_starting_frequency)
+	get_parent().fog_overlay_shift = clamp(get_parent().fog_overlay_shift, -1, 0)
+	node.material.set_shader_parameter(\"shift\", get_parent().fog_overlay_shift)
+	node.material.set_shader_parameter(\"velocity\", get_parent().fog_overlay_velocity)
+	node.material.set_shader_parameter(\"fog_color\", get_parent().fog_overlay_color)
+	node.material.set_shader_parameter(\"noise\", get_parent().fog_overlay_noise_texture)
+	
+	return properties
+
+"
+
+[sub_resource type="Shader" id="22"]
+code = "shader_type canvas_item;
+
+// https://godotshaders.com/shader/2d-fog-overlay/
+
+// Amount of detail.
+uniform int octaves = 4;
+
+// Opacity of the output fog.
+uniform float starting_amplitude: hint_range(0.0, 0.5) = 0.5;
+
+// Rate of pattern within the fog.
+uniform float starting_frequency = 1.0;
+
+// Shift towards transparency (clamp) for sparser fog.
+uniform float shift: hint_range(-1.0, 0.0) = -0.2;
+
+// Direction and speed of travel.
+uniform vec2 velocity = vec2(1.0, 1.0);
+
+// Color of the fog.
+uniform vec4 fog_color: source_color = vec4(0.0, 0.0, 0.0, 1.0);
+
+// Noise texture; OpenSimplexNoise is great, but any filtered texture is fine.
+uniform sampler2D noise;
+
+float rand(vec2 uv) {
+	float amplitude = starting_amplitude;
+	float frequency = starting_frequency;
+	float output = 0.0;
+	for (int i = 0; i < octaves; i++) {
+		output += texture(noise, uv * frequency).x * amplitude;
+		amplitude /= 2.0;
+		frequency *= 2.0;
+	}
+	return clamp(output + shift, 0.0, 1.0);
+}
+
+void fragment() {
+	vec2 motion = vec2(rand(UV + TIME * starting_frequency * velocity));
+	COLOR = mix(vec4(0.0), fog_color, rand(UV + motion));
+}"
+
+[sub_resource type="ShaderMaterial" id="23"]
+shader = SubResource("22")
+shader_parameter/octaves = 4
+shader_parameter/starting_amplitude = 0.5
+shader_parameter/starting_frequency = 1.0
+shader_parameter/shift = -0.2
+shader_parameter/velocity = Vector2(1, 1)
+shader_parameter/fog_color = Color(0, 0, 0, 1)
+
+[sub_resource type="GDScript" id="24"]
+script/source = "@tool
+extends Control
+
+# warning-ignore:unused_argument
+func _physics_process(delta):
+	main()
+
+func main():
+	var properties = []
+	var node = $ColorRect
+	
+	# inspactore exports
+	properties.append(
+		{name = \"Vignette\",
+		type = TYPE_NIL,
+		hint_string = \"vignette_\",
+		usage = PROPERTY_USAGE_GROUP})
+	properties.append(
+		{name = \"vignette_show\",
+		type = TYPE_BOOL,
+		usage = PROPERTY_USAGE_DEFAULT})
+	
+	node.visible = get_parent().vignette_show
+	
+	properties.append(
+		{name = \"vignette_player_pos\",
+		type = TYPE_VECTOR2,
+		usage = PROPERTY_USAGE_DEFAULT})
+	properties.append(
+		{name = \"vignette_color\",
+		type = TYPE_COLOR,
+		usage = PROPERTY_USAGE_DEFAULT})
+	properties.append(
+		{name = \"vignette_multiplier\",
+			type = TYPE_FLOAT,
+			usage = PROPERTY_USAGE_DEFAULT})
+	properties.append(
+		{name = \"vignette_scale\",
+		type = TYPE_FLOAT,
+		usage = PROPERTY_USAGE_DEFAULT})
+	properties.append(
+		{name = \"vignette_softness\",
+		type = TYPE_FLOAT,
+		usage = PROPERTY_USAGE_DEFAULT})
+	
+	# main values setup for effect
+	node.material.set_shader_parameter(\"player_position\", get_parent().vignette_player_pos)
+	node.material.set_shader_parameter(\"color\", get_parent().vignette_color)
+	node.material.set_shader_parameter(\"MULTIPLIER\", get_parent().vignette_multiplier)
+	node.material.set_shader_parameter(\"SCALE\", get_parent().vignette_scale)
+	node.material.set_shader_parameter(\"SOFTNESS\", get_parent().vignette_softness)
+	
+	return properties
+
+"
+
+[sub_resource type="Shader" id="25"]
+code = "shader_type canvas_item;
+uniform vec2 player_position;
+uniform vec4 color : source_color = vec4(0.305, 0.298, 0.341,1);
+
+uniform float MULTIPLIER = 0.56;
+uniform float SCALE = 0.5;
+uniform float SOFTNESS = 0.45;
+
+void fragment(){
+	float val = distance(vec2(UV.x , UV.y * MULTIPLIER), vec2(player_position.x , player_position.y * MULTIPLIER));
+	val = val / SCALE;
+	float vignette = smoothstep(0.2, SOFTNESS, val);
+	COLOR = vec4(color.rgb , vignette );
+}"
+
+[sub_resource type="ShaderMaterial" id="26"]
+shader = SubResource("25")
+shader_parameter/player_position = Vector2(0.5, 0.5)
+shader_parameter/color = Color(0, 0, 0, 1)
+shader_parameter/MULTIPLIER = 1.0
+shader_parameter/SCALE = 0.5
+shader_parameter/SOFTNESS = 1.0
+
+[sub_resource type="Animation" id="Animation_5yxiy"]
+resource_name = "Major Damage"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:chromatc_aberration_show")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:noise_show")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:chromatc_aberration_strength")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [0.5, 0.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".:noise_power")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [0.01, 0.0]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath(".:bloom_show")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath(".:bloom_intensity")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [2, 0.0]
+}
+
+[sub_resource type="Animation" id="Animation_u4mp8"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:chromatc_aberration_show")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:noise_show")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:chromatc_aberration_strength")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0.5]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".:noise_power")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0.01]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath(".:bloom_show")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath(".:bloom_intensity")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_6gpuh"]
+_data = {
+"Major Damage": SubResource("Animation_5yxiy"),
+"RESET": SubResource("Animation_u4mp8")
+}
+
+[node name="PostProcessing_tool" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("4")
+adjustment_show = false
+adjustment_brightnes = 1.0
+adjustment_contrast = 1.0
+adjustment_saturation = 1.0
+color_splash_show = false
+color_splash_color = Color(0, 0, 0, 1)
+color_splash_strength = 0.2
+bloom_show = false
+bloom_radius = 1
+bloom_threshold = 0.5
+bloom_intensity = 1
+noise_show = false
+noise_power = 0.01
+noise_seed = 80
+noise_speed = 0.1
+chromatc_aberration_show = false
+chromatc_aberration_strength = 0.5
+glitch_show = false
+glitch_power = 0.03
+glitch_rate = 0.2
+glitch_speed = 5.0
+glitch_block_size = 30.5
+glitch_color_rate = 0.01
+fog_overlay_show = false
+fog_overlay_octaves = 4
+fog_overlay_starting_amplitude = 0.5
+fog_overlay_starting_frequency = 1.0
+fog_overlay_shift = -0.2
+fog_overlay_velocity = Vector2(1, 1)
+fog_overlay_color = Color(0, 0, 0, 1)
+fog_overlay_noise_texture = null
+vignette_show = false
+vignette_player_pos = Vector2(0.5, 0.5)
+vignette_color = Color(0, 0, 0, 1)
+vignette_multiplier = 1.0
+vignette_scale = 0.5
+vignette_softness = 1.0
+
+[node name="Adjustments" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = SubResource("5")
+
+[node name="BackBufferCopy" type="BackBufferCopy" parent="Adjustments"]
+copy_mode = 2
+rect = Rect2(0, 0, 300, 200)
+
+[node name="ColorRect" type="ColorRect" parent="Adjustments/BackBufferCopy"]
+visible = false
+material = SubResource("6")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 1620.0
+offset_bottom = 880.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="ColorSplash" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = SubResource("7")
+
+[node name="BackBufferCopy" type="BackBufferCopy" parent="ColorSplash"]
+copy_mode = 2
+rect = Rect2(0, 0, 200, 200)
+
+[node name="ColorRect" type="ColorRect" parent="ColorSplash/BackBufferCopy"]
+visible = false
+material = SubResource("9")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 1720.0
+offset_bottom = 880.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Bloom" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = SubResource("10")
+
+[node name="BackBufferCopy" type="BackBufferCopy" parent="Bloom"]
+copy_mode = 2
+rect = Rect2(0, 0, 200, 200)
+
+[node name="ColorRect" type="ColorRect" parent="Bloom/BackBufferCopy"]
+visible = false
+material = SubResource("12")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 1720.0
+offset_bottom = 880.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Noise" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = SubResource("16")
+
+[node name="ColorRect" type="ColorRect" parent="Noise"]
+visible = false
+material = SubResource("18")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="ChromaticAberration" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = SubResource("13")
+
+[node name="BackBufferCopy" type="BackBufferCopy" parent="ChromaticAberration"]
+copy_mode = 2
+rect = Rect2(0, 0, 200, 200)
+
+[node name="ColorRect" type="ColorRect" parent="ChromaticAberration/BackBufferCopy"]
+visible = false
+material = SubResource("15")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 1720.0
+offset_bottom = 880.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Glitch" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = SubResource("19")
+
+[node name="ColorRect" type="ColorRect" parent="Glitch"]
+visible = false
+material = SubResource("20")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="FogOverlay" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = SubResource("21")
+
+[node name="ColorRect" type="ColorRect" parent="FogOverlay"]
+visible = false
+material = SubResource("23")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Vignette" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = SubResource("24")
+
+[node name="ColorRect" type="ColorRect" parent="Vignette"]
+visible = false
+material = SubResource("26")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_6gpuh")
+}

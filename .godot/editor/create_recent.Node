@@ -1,7 +1,15 @@
+Node3D
+CSGSphere3D
+Label
+Panel
+CanvasLayer
+CSGCylinder3D
+CollisionShape3D
+CharacterBody3D
+RemoteTransform3D
 GPUParticles3D
 DirectionalLight3D
 MeshInstance3D
 CSGBox3D
 Camera3D
-CSGCylinder3D
 WorldEnvironment

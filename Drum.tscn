@@ -1,131 +1,274 @@
-[gd_scene load_steps=10 format=3 uid="uid://bp0w72j7npmna"]
+[gd_scene load_steps=24 format=3 uid="uid://b5wm1dbf8xj4y"]
 
 [ext_resource type="ArrayMesh" uid="uid://bsbe4f0d6hfok" path="res://Bubba.obj" id="1_qvgd7"]
+[ext_resource type="Script" path="res://addons/jm_pp_outlines/jm_pp_outlines_camera.gd" id="1_woct7"]
+[ext_resource type="FontFile" uid="uid://f1s61kqc4dld" path="res://fonts/RobotoCondensed-Bold.ttf" id="3_7e7yr"]
+[ext_resource type="Script" path="res://FloatyUI.gd" id="4_h46km"]
+[ext_resource type="FontFile" uid="uid://dpac28rujlg6v" path="res://fonts/RobotoCondensed-Italic.ttf" id="4_qylyd"]
+[ext_resource type="PackedScene" uid="uid://mkh7y7yikxqm" path="res://addons/post_processing_tool/PostProcessing_tool.tscn" id="5_c0l1v"]
+
+[sub_resource type="Gradient" id="Gradient_armpv"]
+colors = PackedColorArray(0, 0.0166667, 0.25, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_nhpqr"]
+gradient = SubResource("Gradient_armpv")
 
 [sub_resource type="Environment" id="Environment_0cget"]
 background_mode = 1
-background_color = Color(0.176471, 0.733333, 0.886275, 1)
+background_color = Color(0.121569, 0.160784, 0.25098, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.478431, 0.835294, 1, 1)
+adjustment_color_correction = SubResource("GradientTexture1D_nhpqr")
 
-[sub_resource type="Shader" id="Shader_ramup"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1fqam"]
+albedo_color = Color(0.568627, 0.568627, 0.568627, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lyqax"]
+shading_mode = 0
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vwitc"]
+diffuse_mode = 3
+roughness = 0.0
+
+[sub_resource type="Shader" id="Shader_iv014"]
 code = "shader_type spatial;
-render_mode cull_front, depth_prepass_alpha, depth_draw_opaque, unshaded;
+render_mode depth_draw_opaque, unshaded, world_vertex_coords;
 
-uniform sampler2D DEPTH_TEXTURE : hint_depth_texture, filter_linear;
-uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear;
+uniform vec4 albedo : source_color = vec4(1.0, 1.0, 1.0, 1.0);
+uniform sampler2D texture_albedo : source_color,filter_linear_mipmap,repeat_enable;
 
-uniform vec4 outline_color : source_color = vec4(0.0, 0.0, 0.0, 1.0);
-uniform float distance_falloff : hint_range(0, 10) = 1;
-uniform float smoothing_cutoff : hint_range(0, 1) = 0.1;
-uniform float smoothing_max : hint_range(0, 1) = 0.1;
+uniform float normal_offset : hint_range(0, 1, 0.01) = 0.02;
+uniform float time_influence : hint_range(0, 50) = 3;
+uniform float y_div : hint_range(0, 10, .1) = 2.87;
 
 void vertex() {
-	// remember to rotate the quad 180d around Y
-	
-	// uncomment to use full screen
-	//POSITION = vec4(VERTEX, 1.0) * vec4(-1.0, -1.0, 1.0, 1.0);
-}
-
-float abs_diff(float depth_a, float depth_b){
-	return abs(abs(depth_a)-abs(depth_b));
-}
-
-float linear_depth(in sampler2D depth_texture, in vec2 screen_uv, in mat4 inv_projection_matrix){
-	// get raw depth, this is not a linear value in godot 4.0 vulkan rendering
-	float raw_depth = texture(depth_texture, screen_uv)[0];
-    
-	vec3 normalized_device_coordinates = vec3(screen_uv * 2.0 - 1.0, raw_depth);
-	
-	//convert NDC to view space via the inverse projection matrix
-    vec4 view_space = inv_projection_matrix * vec4(normalized_device_coordinates, 1.0);	
-    
-	//linearize the depth
-	view_space.xyz /= view_space.w;	
-	
-	// camera view points in the negative Z direction, so all depths are negative
-	// we invert the sign here to get positive depth values
-	return -view_space.z;
+    VERTEX.x += sin(VERTEX.y * y_div + round(TIME * time_influence)) * normal_offset;
+    VERTEX.y += sin(VERTEX.x * y_div + round(TIME * time_influence)) * normal_offset;
+    VERTEX.z += sin(VERTEX.y * y_div + round(TIME * time_influence)) * normal_offset;
 }
 
 void fragment() {
-	// set color to outline color for whole screen
-	// non-outline fragments will be set to transparent
-	ALBEDO = outline_color.rgb;
-	
-	float d = linear_depth(DEPTH_TEXTURE, SCREEN_UV, INV_PROJECTION_MATRIX);
-	
-	// calculate the offset size of a single pixel
-	vec2 screen_size = vec2(textureSize(SCREEN_TEXTURE, 1));
-	
-	vec2 pixel_size = (distance_falloff / d) / vec2(screen_size.x, screen_size.y);
-
-	float du = linear_depth(DEPTH_TEXTURE, SCREEN_UV+vec2(0.0, pixel_size.y), INV_PROJECTION_MATRIX);
-	float dd = linear_depth(DEPTH_TEXTURE, SCREEN_UV+vec2(0.0, -pixel_size.y), INV_PROJECTION_MATRIX);
-	float dr = linear_depth(DEPTH_TEXTURE, SCREEN_UV+vec2(pixel_size.x, 0.0), INV_PROJECTION_MATRIX);
-	float dl = linear_depth(DEPTH_TEXTURE, SCREEN_UV+vec2(-pixel_size.x, 0.0), INV_PROJECTION_MATRIX);
-
-	// combine all the abs differences in depth of neighbors
-	ALPHA = 
-		abs_diff(d, du) +
-		abs_diff(d, dl) +
-		abs_diff(d, dd) +
-		abs_diff(d, dr) 
-	;
-	
-	ALPHA = smoothstep(smoothing_cutoff, max(smoothing_cutoff, smoothing_max), ALPHA);
-	
-	// apply the alpha from the outline color as well
-	ALPHA *= outline_color.a;
-	
-	// clamp the outline color to remove artifacts
-	ALPHA = clamp(ALPHA, 0.0, 1.0);
+	vec2 base_uv = UV;
+	vec4 albedo_tex = texture(texture_albedo, base_uv);
+	albedo_tex *= COLOR;
+	ALBEDO = albedo.rgb * albedo_tex.rgb;
 }"
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_xb41d"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_iq4bo"]
 render_priority = 0
-shader = SubResource("Shader_ramup")
-shader_parameter/outline_color = Color(0, 0, 0, 1)
-shader_parameter/distance_falloff = 7.0
-shader_parameter/smoothing_cutoff = 1.0
-shader_parameter/smoothing_max = 0.0
-
-[sub_resource type="QuadMesh" id="QuadMesh_vx4na"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gybeg"]
-shading_mode = 0
-albedo_color = Color(1, 0.858824, 0.0392157, 1)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y0fqy"]
-shading_mode = 0
+shader = SubResource("Shader_iv014")
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/normal_offset = 0.01
+shader_parameter/time_influence = 12.0
+shader_parameter/y_div = 2.87
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_3ffes"]
 radius = 0.3
+height = 1.5
+rings = 32
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_57nyk"]
+radius = 0.3
+height = 1.5
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_hfgmk"]
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xjqc8"]
+diffuse_mode = 3
+albedo_color = Color(0.607843, 0.701961, 0.647059, 1)
+roughness = 0.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kl6cn"]
+diffuse_mode = 3
+albedo_color = Color(0.741176, 0.141176, 0.392157, 1)
+roughness = 0.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hwliu"]
+bg_color = Color(0, 0, 0, 1)
+border_color = Color(0.870588, 0.364706, 0.592157, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0.870588, 0.364706, 0.592157, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yurmx"]
+bg_color = Color(0.870588, 0.364706, 0.592157, 1)
+border_color = Color(0.870588, 0.364706, 0.592157, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0.870588, 0.364706, 0.592157, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lumjj"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0.921569, 0.239216, 0.623529, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5qlsh"]
+render_priority = 1
+transparency = 1
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+
 [node name="Node3D" type="Node3D"]
+
+[node name="PostProcessing_tool" parent="." instance=ExtResource("5_c0l1v")]
+adjustment_brightnes = 1.203
+adjustment_contrast = 1.125
+noise_speed = 0.001
+vignette_scale = 2.902
+vignette_softness = 0.201
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_0cget")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.668, 3.194)
+transform = Transform3D(0.707107, 0.353553, -0.612372, 0, 0.866026, 0.5, 0.707107, -0.353553, 0.612372, -9.83015, 10.5919, 9.83015)
+projection = 1
+current = true
+size = 10.0
+far = 35.12
+script = ExtResource("1_woct7")
+max_edge_alpha = 1.0
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Camera3D"]
-transform = Transform3D(-5, 0, -4.37114e-07, 0, 5, 0, 4.37114e-07, 0, -5, 0, 0, -0.238)
-material_override = SubResource("ShaderMaterial_xb41d")
-mesh = SubResource("QuadMesh_vx4na")
+[node name="Floor2" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.833602)
+size = Vector3(12.6346, 1, 10.8986)
+material = SubResource("StandardMaterial3D_1fqam")
 
-[node name="CSGBox3D" type="CSGBox3D" parent="."]
-material = SubResource("StandardMaterial3D_gybeg")
+[node name="Floor3" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.97754, -5.74997)
+size = Vector3(8, 7.10191, 8)
+material = SubResource("StandardMaterial3D_1fqam")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5873, 0)
-material_override = SubResource("StandardMaterial3D_y0fqy")
+[node name="Floor4" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.52446, -5.74997)
+size = Vector3(8, 0.1, 8)
+material = SubResource("StandardMaterial3D_lyqax")
+
+[node name="Player" type="CharacterBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5873, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+material_override = SubResource("StandardMaterial3D_vwitc")
+material_overlay = SubResource("ShaderMaterial_iq4bo")
 mesh = SubResource("CapsuleMesh_3ffes")
+skeleton = NodePath("../..")
+
+[node name="RemoteTransform3D" type="RemoteTransform3D" parent="Player"]
+transform = Transform3D(0.707107, 0.353553, -0.612372, 0, 0.866026, 0.5, 0.707107, -0.353553, 0.612372, -9.83015, 10.0046, 9.83015)
+remote_path = NodePath("../../Camera3D")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+shape = SubResource("CapsuleShape3D_57nyk")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(-0.113203, -0.782945, 0.611704, 0, 0.615662, 0.788011, -0.993572, 0.0892053, -0.0696949, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 2.07947, 5.50129, 0)
+shadow_enabled = true
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+visible = false
 process_material = SubResource("ParticleProcessMaterial_hfgmk")
 draw_pass_1 = ExtResource("1_qvgd7")
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.991816, 0)
+height = 0.249304
+material = SubResource("StandardMaterial3D_xjqc8")
+
+[node name="CSGCylinder3D2" type="CSGCylinder3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.18507, 0.991816, 0)
+height = 0.249304
+material = SubResource("StandardMaterial3D_kl6cn")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Panel" type="Panel" parent="CanvasLayer"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 30.0
+offset_top = -64.0001
+offset_right = 186.0
+offset_bottom = -22.0001
+grow_vertical = 0
+rotation = -0.141177
+theme_override_styles/panel = SubResource("StyleBoxFlat_hwliu")
+script = ExtResource("4_h46km")
+
+[node name="Panel2" type="Panel" parent="CanvasLayer/Panel"]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = -7.6339
+offset_top = -38.0347
+offset_right = 148.366
+offset_bottom = 3.96533
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_yurmx")
+
+[node name="Label" type="Label" parent="CanvasLayer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 9.0
+offset_top = 8.0
+offset_right = -10.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("3_7e7yr")
+theme_override_font_sizes/font_size = 28
+text = "0005"
+vertical_alignment = 1
+
+[node name="Label3" type="Label" parent="CanvasLayer/Panel"]
+modulate = Color(0, 0, 0, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1.67831
+offset_top = -26.0228
+offset_right = -17.3217
+offset_bottom = -37.0228
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("4_qylyd")
+theme_override_font_sizes/font_size = 21
+text = "bits"
+
+[node name="Label2" type="Label" parent="CanvasLayer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 3.65841
+offset_top = -25.7413
+offset_right = -15.3416
+offset_bottom = -41.7413
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("4_qylyd")
+theme_override_font_sizes/font_size = 21
+text = "bits"
+
+[node name="Node3D" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.11455, 1.31964)
+visible = false
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="Node3D"]
+flip_faces = true
+material = SubResource("StandardMaterial3D_lumjj")
+
+[node name="CSGSphere3D2" type="CSGSphere3D" parent="Node3D"]
+radius = 0.322
+material = SubResource("StandardMaterial3D_5qlsh")
