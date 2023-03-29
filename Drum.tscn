@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://bp0w72j7npmna"]
+[gd_scene load_steps=36 format=3 uid="uid://b5wm1dbf8xj4y"]
 
 [ext_resource type="ArrayMesh" uid="uid://bsbe4f0d6hfok" path="res://Bubba.obj" id="1_qvgd7"]
 [ext_resource type="Script" path="res://addons/jm_pp_outlines/jm_pp_outlines_camera.gd" id="1_woct7"]
@@ -10,6 +10,8 @@
 [ext_resource type="FontFile" uid="uid://dpac28rujlg6v" path="res://fonts/RobotoCondensed-Italic.ttf" id="4_qylyd"]
 [ext_resource type="PackedScene" uid="uid://mkh7y7yikxqm" path="res://addons/post_processing_tool/PostProcessing_tool.tscn" id="5_c0l1v"]
 [ext_resource type="Texture2D" uid="uid://ci6eco0stogau" path="res://Dash.png" id="6_m0w5b"]
+[ext_resource type="ArrayMesh" uid="uid://dh1ebgux0k3od" path="res://models/target.obj" id="11_xiwt0"]
+[ext_resource type="Shader" path="res://Wiggle.gdshader" id="13_v73er"]
 
 [sub_resource type="Gradient" id="Gradient_armpv"]
 colors = PackedColorArray(0, 0.0166667, 0.25, 1, 1, 1, 1, 1)
@@ -35,11 +37,11 @@ albedo_color = Color(0, 0, 0, 1)
 radius = 0.3
 height = 1.5
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h6uao"]
-transparency = 1
-shading_mode = 0
-albedo_texture = ExtResource("6_m0w5b")
-uv1_scale = Vector3(10, 10, 10)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wncl3"]
+transparency = 3
+alpha_hash_scale = 0.0
+alpha_antialiasing_mode = 0
+albedo_color = Color(1, 1, 1, 0.188235)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4v87j"]
 transparency = 1
@@ -51,38 +53,16 @@ uv1_scale = Vector3(10, 10, 10)
 [sub_resource type="PlaneMesh" id="PlaneMesh_p55km"]
 size = Vector2(0.2, 1)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vwitc"]
-diffuse_mode = 3
-roughness = 0.0
-
-[sub_resource type="Shader" id="Shader_iv014"]
-code = "shader_type spatial;
-render_mode depth_draw_opaque, unshaded, world_vertex_coords;
-
-uniform vec4 albedo : source_color = vec4(1.0, 1.0, 1.0, 1.0);
-uniform sampler2D texture_albedo : source_color,filter_linear_mipmap,repeat_enable;
-
-uniform float normal_offset : hint_range(0, 1, 0.01) = 0.02;
-uniform float time_influence : hint_range(0, 50) = 3;
-uniform float y_div : hint_range(0, 10, .1) = 2.87;
-
-void vertex() {
-    VERTEX.x += sin(VERTEX.y * y_div + round(TIME * time_influence)) * normal_offset;
-    VERTEX.y += sin(VERTEX.x * y_div + round(TIME * time_influence)) * normal_offset;
-    VERTEX.z += sin(VERTEX.y * y_div + round(TIME * time_influence)) * normal_offset;
-}
-
-void fragment() {
-	vec2 base_uv = UV;
-	vec4 albedo_tex = texture(texture_albedo, base_uv);
-	albedo_tex *= COLOR;
-	ALBEDO = albedo.rgb * albedo_tex.rgb;
-}"
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_iq4bo"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_y1yxh"]
 render_priority = 0
-shader = SubResource("Shader_iv014")
+shader = ExtResource("13_v73er")
 shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/point_size = null
+shader_parameter/roughness = 0.0
+shader_parameter/uv1_scale = null
+shader_parameter/uv1_offset = null
+shader_parameter/uv2_scale = null
+shader_parameter/uv2_offset = null
 shader_parameter/normal_offset = 0.01
 shader_parameter/time_influence = 12.0
 shader_parameter/y_div = 2.87
@@ -108,11 +88,6 @@ size = Vector3(1, 0.684, 0.1)
 
 [sub_resource type="PrismMesh" id="PrismMesh_wygkm"]
 size = Vector3(0.6, 0.4, 0.01)
-
-[sub_resource type="TorusMesh" id="TorusMesh_yi7xa"]
-lightmap_size_hint = Vector2i(33, 9)
-inner_radius = 0.8
-ring_segments = 6
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_hfgmk"]
 
@@ -143,6 +118,34 @@ render_priority = 1
 transparency = 1
 emission_enabled = true
 emission = Color(1, 1, 1, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_08lk0"]
+render_priority = 0
+shader = ExtResource("13_v73er")
+shader_parameter/albedo = Color(0.960784, 0.219608, 0.180392, 1)
+shader_parameter/point_size = 1.0
+shader_parameter/roughness = 1.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = Vector3(0, 0, 0)
+shader_parameter/normal_offset = 0.01
+shader_parameter/time_influence = 12.0
+shader_parameter/y_div = 2.87
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_37tvt"]
+render_priority = 0
+shader = ExtResource("13_v73er")
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/point_size = 1.0
+shader_parameter/roughness = 1.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = Vector3(0, 0, 0)
+shader_parameter/normal_offset = 0.01
+shader_parameter/time_influence = 12.0
+shader_parameter/y_div = 2.87
 
 [node name="Node3D" type="Node3D"]
 
@@ -199,23 +202,20 @@ shape = SubResource("CapsuleShape3D_57nyk")
 [node name="Pointer" type="Node3D" parent="Player"]
 
 [node name="Position" type="Node3D" parent="Player/Pointer"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.38419e-07, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.38419e-07, 2.37207)
 
 [node name="Decal" type="Sprite3D" parent="Player/Pointer/Position"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.00999976, 0)
+visible = false
 texture = ExtResource("4_kmau3")
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="Player/Pointer/Position"]
+material_override = SubResource("StandardMaterial3D_wncl3")
 
 [node name="Rotation" type="Node3D" parent="Player/Pointer"]
 
-[node name="CSGCylinder3D" type="CSGCylinder3D" parent="Player/Pointer/Rotation"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.710874, 1.90131)
-visible = false
-radius = 0.1
-height = 3.97686
-material = SubResource("StandardMaterial3D_h6uao")
-
 [node name="Geometry" type="MeshInstance3D" parent="Player/Pointer/Rotation"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.324687, 0.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.558, 0.5)
 material_override = SubResource("StandardMaterial3D_4v87j")
 mesh = SubResource("PlaneMesh_p55km")
 
@@ -224,8 +224,7 @@ mesh = SubResource("PlaneMesh_p55km")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Player/Model"]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0.75, 0)
 layers = 2
-material_override = SubResource("StandardMaterial3D_vwitc")
-material_overlay = SubResource("ShaderMaterial_iq4bo")
+material_override = SubResource("ShaderMaterial_y1yxh")
 mesh = SubResource("CapsuleMesh_3ffes")
 skeleton = NodePath("../../..")
 
@@ -248,13 +247,20 @@ material_override = SubResource("StandardMaterial3D_k4tya")
 mesh = SubResource("PrismMesh_wygkm")
 skeleton = NodePath("../..")
 
-[node name="MeshInstance3D4" type="MeshInstance3D" parent="Player/Model"]
-transform = Transform3D(1, 0, 0, 0, 0.1, 0, 0, 0, 1, 0, 0, 0)
+[node name="CSGCylinder3D2" type="CSGCylinder3D" parent="Player/Model"]
 material_override = SubResource("StandardMaterial3D_k4tya")
-mesh = SubResource("TorusMesh_yi7xa")
+radius = 1.0336
+height = 0.1
+sides = 16
+
+[node name="CSGCylinder3D3" type="CSGCylinder3D" parent="Player/Model/CSGCylinder3D2"]
+operation = 2
+radius = 0.913452
+height = 0.1
+sides = 16
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 2.07947, 5.50129, 0)
+transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 2.07947, 5.50129, 0)
 shadow_enabled = true
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="."]
@@ -275,7 +281,7 @@ offset_top = 35.0
 offset_right = 527.0
 offset_bottom = 256.0
 rotation = -0.476687
-color = Color(0, 0, 0, 1)
+color = Color(0.0588235, 0.0862745, 0.223529, 1)
 
 [node name="Label6" type="Label" parent="CanvasLayer"]
 modulate = Color(1, 0.760784, 0, 1)
@@ -308,7 +314,6 @@ text = "5"
 
 [node name="Label4" type="Label" parent="CanvasLayer"]
 modulate = Color(0, 0, 0, 1)
-self_modulate = Color(1, 1, 1, 0.823529)
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -324,7 +329,6 @@ theme_override_font_sizes/font_size = 48
 text = "TARGETS LEFT"
 
 [node name="Label5" type="Label" parent="CanvasLayer"]
-self_modulate = Color(1, 1, 1, 0.823529)
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -423,3 +427,27 @@ material = SubResource("StandardMaterial3D_lumjj")
 [node name="CSGSphere3D2" type="CSGSphere3D" parent="Node3D"]
 radius = 0.322
 material = SubResource("StandardMaterial3D_5qlsh")
+
+[node name="Target" type="Node3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 5.14254, 0.916422, -0.238842)
+
+[node name="Target" type="MeshInstance3D" parent="Target"]
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 0, 0, 0)
+mesh = ExtResource("11_xiwt0")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("ShaderMaterial_08lk0")
+surface_material_override/1 = SubResource("ShaderMaterial_37tvt")
+
+[node name="Target2" type="MeshInstance3D" parent="Target"]
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, -2.4, 0, 0)
+mesh = ExtResource("11_xiwt0")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("ShaderMaterial_08lk0")
+surface_material_override/1 = SubResource("ShaderMaterial_37tvt")
+
+[node name="Target3" type="MeshInstance3D" parent="Target"]
+transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, -4.8, 0, 0)
+mesh = ExtResource("11_xiwt0")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("ShaderMaterial_08lk0")
+surface_material_override/1 = SubResource("ShaderMaterial_37tvt")

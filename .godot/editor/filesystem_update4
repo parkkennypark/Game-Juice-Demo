@@ -1,4 +1,3 @@
-res://GoodEnv.tres
 res://Drum.tscn
-res://Player.gd
-res://CameraDriver.gd
+res://GoodEnv.tres
+res://Box.tscn
