@@ -1,4 +1,4 @@
-res://Drum.tscn
 res://GoodEnv.tres
-res://FloatyUI.gd
-res://Box.tscn
+res://Drum.tscn
+res://Player.gd
+res://CameraDriver.gd
