@@ -1,0 +1,131 @@
+[gd_scene load_steps=10 format=3 uid="uid://bp0w72j7npmna"]
+
+[ext_resource type="ArrayMesh" uid="uid://bsbe4f0d6hfok" path="res://Bubba.obj" id="1_qvgd7"]
+
+[sub_resource type="Environment" id="Environment_0cget"]
+background_mode = 1
+background_color = Color(0.176471, 0.733333, 0.886275, 1)
+
+[sub_resource type="Shader" id="Shader_ramup"]
+code = "shader_type spatial;
+render_mode cull_front, depth_prepass_alpha, depth_draw_opaque, unshaded;
+
+uniform sampler2D DEPTH_TEXTURE : hint_depth_texture, filter_linear;
+uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear;
+
+uniform vec4 outline_color : source_color = vec4(0.0, 0.0, 0.0, 1.0);
+uniform float distance_falloff : hint_range(0, 10) = 1;
+uniform float smoothing_cutoff : hint_range(0, 1) = 0.1;
+uniform float smoothing_max : hint_range(0, 1) = 0.1;
+
+void vertex() {
+	// remember to rotate the quad 180d around Y
+	
+	// uncomment to use full screen
+	//POSITION = vec4(VERTEX, 1.0) * vec4(-1.0, -1.0, 1.0, 1.0);
+}
+
+float abs_diff(float depth_a, float depth_b){
+	return abs(abs(depth_a)-abs(depth_b));
+}
+
+float linear_depth(in sampler2D depth_texture, in vec2 screen_uv, in mat4 inv_projection_matrix){
+	// get raw depth, this is not a linear value in godot 4.0 vulkan rendering
+	float raw_depth = texture(depth_texture, screen_uv)[0];
+    
+	vec3 normalized_device_coordinates = vec3(screen_uv * 2.0 - 1.0, raw_depth);
+	
+	//convert NDC to view space via the inverse projection matrix
+    vec4 view_space = inv_projection_matrix * vec4(normalized_device_coordinates, 1.0);	
+    
+	//linearize the depth
+	view_space.xyz /= view_space.w;	
+	
+	// camera view points in the negative Z direction, so all depths are negative
+	// we invert the sign here to get positive depth values
+	return -view_space.z;
+}
+
+void fragment() {
+	// set color to outline color for whole screen
+	// non-outline fragments will be set to transparent
+	ALBEDO = outline_color.rgb;
+	
+	float d = linear_depth(DEPTH_TEXTURE, SCREEN_UV, INV_PROJECTION_MATRIX);
+	
+	// calculate the offset size of a single pixel
+	vec2 screen_size = vec2(textureSize(SCREEN_TEXTURE, 1));
+	
+	vec2 pixel_size = (distance_falloff / d) / vec2(screen_size.x, screen_size.y);
+
+	float du = linear_depth(DEPTH_TEXTURE, SCREEN_UV+vec2(0.0, pixel_size.y), INV_PROJECTION_MATRIX);
+	float dd = linear_depth(DEPTH_TEXTURE, SCREEN_UV+vec2(0.0, -pixel_size.y), INV_PROJECTION_MATRIX);
+	float dr = linear_depth(DEPTH_TEXTURE, SCREEN_UV+vec2(pixel_size.x, 0.0), INV_PROJECTION_MATRIX);
+	float dl = linear_depth(DEPTH_TEXTURE, SCREEN_UV+vec2(-pixel_size.x, 0.0), INV_PROJECTION_MATRIX);
+
+	// combine all the abs differences in depth of neighbors
+	ALPHA = 
+		abs_diff(d, du) +
+		abs_diff(d, dl) +
+		abs_diff(d, dd) +
+		abs_diff(d, dr) 
+	;
+	
+	ALPHA = smoothstep(smoothing_cutoff, max(smoothing_cutoff, smoothing_max), ALPHA);
+	
+	// apply the alpha from the outline color as well
+	ALPHA *= outline_color.a;
+	
+	// clamp the outline color to remove artifacts
+	ALPHA = clamp(ALPHA, 0.0, 1.0);
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xb41d"]
+render_priority = 0
+shader = SubResource("Shader_ramup")
+shader_parameter/outline_color = Color(0, 0, 0, 1)
+shader_parameter/distance_falloff = 7.0
+shader_parameter/smoothing_cutoff = 1.0
+shader_parameter/smoothing_max = 0.0
+
+[sub_resource type="QuadMesh" id="QuadMesh_vx4na"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gybeg"]
+shading_mode = 0
+albedo_color = Color(1, 0.858824, 0.0392157, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y0fqy"]
+shading_mode = 0
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_3ffes"]
+radius = 0.3
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_hfgmk"]
+
+[node name="Node3D" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_0cget")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.668, 3.194)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Camera3D"]
+transform = Transform3D(-5, 0, -4.37114e-07, 0, 5, 0, 4.37114e-07, 0, -5, 0, 0, -0.238)
+material_override = SubResource("ShaderMaterial_xb41d")
+mesh = SubResource("QuadMesh_vx4na")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+material = SubResource("StandardMaterial3D_gybeg")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5873, 0)
+material_override = SubResource("StandardMaterial3D_y0fqy")
+mesh = SubResource("CapsuleMesh_3ffes")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.113203, -0.782945, 0.611704, 0, 0.615662, 0.788011, -0.993572, 0.0892053, -0.0696949, 0, 0, 0)
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+process_material = SubResource("ParticleProcessMaterial_hfgmk")
+draw_pass_1 = ExtResource("1_qvgd7")

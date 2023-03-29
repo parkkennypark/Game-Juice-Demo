@@ -1,0 +1,29 @@
+[gd_resource type="Environment" load_steps=4 format=3 uid="uid://rh30v8oaa0cn"]
+
+[ext_resource type="Texture2D" uid="uid://cg56lgcem0kev" path="res://Cloudy Sky Panorama w bottom.png" id="1_lbc2q"]
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_t1yf0"]
+panorama = ExtResource("1_lbc2q")
+
+[sub_resource type="Sky" id="Sky_w7djt"]
+sky_material = SubResource("PanoramaSkyMaterial_t1yf0")
+
+[resource]
+background_mode = 2
+sky = SubResource("Sky_w7djt")
+ambient_light_color = Color(1, 0.878431, 0.819608, 1)
+ambient_light_sky_contribution = 0.6
+ambient_light_energy = 1.43
+tonemap_mode = 2
+ssao_enabled = true
+ssao_intensity = 6.0
+glow_enabled = true
+glow_bloom = 0.07
+fog_density = 0.0168
+fog_aerial_perspective = 1.0
+fog_sky_affect = 0.0
+volumetric_fog_enabled = true
+volumetric_fog_albedo = Color(0.6, 0.913725, 0.941176, 1)
+volumetric_fog_sky_affect = 0.0
+adjustment_contrast = 1.26
+adjustment_saturation = 0.94

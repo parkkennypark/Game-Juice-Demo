@@ -1,0 +1,12 @@
+2a60927148abd1d33b818b535e306557
+::res://::1680051815
+BadEnv.tres::Environment::7602523583399545536::1679939562::0::1::::<><>::uid://cg56lgcem0kev
+bad_sky.tres::Sky::6411269711393892098::1679895311::0::1::::<><>::
+Box.tscn::PackedScene::5986793779200860226::1679939562::0::1::::<><>::uid://rh30v8oaa0cn<>uid://drxxms1x3qa7s
+Bubba.obj::Mesh::3652179204340926786::1680051815::1680051815::1::::<><>::
+Cave.png::CompressedTexture2D::8752412758836838803::1679895747::1679895773::1::::<><>::
+Cloudy Sky Panorama w bottom.png::CompressedTexture2D::5257807950773385677::1679895742::1679895765::1::::<><>::
+GoodEnv.tres::Environment::1209406861375076021::1679939562::0::1::::<><>::uid://cg56lgcem0kev
+good_sky.tres::Sky::523468511423606092::1679939482::0::1::::<><>::
+icon.svg::CompressedTexture2D::7165653682448132206::1679893058::1679893064::1::::<><>::
+lowpoly_floating_island.glb::PackedScene::8401371988297995506::1679936705::1679936710::1::::<><>::

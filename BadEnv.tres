@@ -1,0 +1,15 @@
+[gd_resource type="Environment" load_steps=4 format=3 uid="uid://dgkypnj8hyukm"]
+
+[ext_resource type="Texture2D" uid="uid://cg56lgcem0kev" path="res://Cloudy Sky Panorama w bottom.png" id="1_vvhw6"]
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_t1yf0"]
+panorama = ExtResource("1_vvhw6")
+
+[sub_resource type="Sky" id="Sky_w7djt"]
+sky_material = SubResource("PanoramaSkyMaterial_t1yf0")
+
+[resource]
+sky = SubResource("Sky_w7djt")
+ambient_light_color = Color(1, 0.976471, 0.839216, 1)
+ambient_light_sky_contribution = 0.62
+ssao_intensity = 4.84

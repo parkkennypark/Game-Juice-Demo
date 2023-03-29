@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://crkbvbn0p0rda"]
+
+[ext_resource type="Environment" uid="uid://rh30v8oaa0cn" path="res://GoodEnv.tres" id="1_qsk7a"]
+[ext_resource type="PackedScene" uid="uid://drxxms1x3qa7s" path="res://lowpoly_floating_island.glb" id="2_rtw5i"]
+
+[node name="Node3D" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("1_qsk7a")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.894106, -0.114011, 0.433101, -0.368513, 0.362264, 0.856132, -0.254505, -0.925076, 0.281888, 0, 1, 0)
+shadow_enabled = true
+
+[node name="lowpoly_floating_island" parent="." instance=ExtResource("2_rtw5i")]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
