@@ -1,0 +1,21 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://bw44n41vneko0"
+path="res://.godot/imported/grapes_but_stronger.obj-917472bf112ed9c11e8d56521123b071.mesh"
+
+[deps]
+
+files=["res://.godot/imported/grapes_but_stronger.obj-917472bf112ed9c11e8d56521123b071.mesh"]
+
+source_file="res://duck_game/grapes_but_stronger.obj"
+dest_files=["res://.godot/imported/grapes_but_stronger.obj-917472bf112ed9c11e8d56521123b071.mesh", "res://.godot/imported/grapes_but_stronger.obj-917472bf112ed9c11e8d56521123b071.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true

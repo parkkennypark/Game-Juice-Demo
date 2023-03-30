@@ -1,7 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://crkbvbn0p0rda"]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Environment" uid="uid://rh30v8oaa0cn" path="res://GoodEnv.tres" id="1_qsk7a"]
-[ext_resource type="PackedScene" uid="uid://drxxms1x3qa7s" path="res://lowpoly_floating_island.glb" id="2_rtw5i"]
+[ext_resource type="PackedScene" uid="uid://drxxms1x3qa7s" path="res://duck_game/lowpoly_floating_island.glb" id="2_rtw5i"]
 
 [node name="Node3D" type="Node3D"]
 

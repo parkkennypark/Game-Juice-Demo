@@ -1,0 +1,21 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://c2fscxp0jncf0"
+path="res://.godot/imported/cone.obj-097fd8660da7b205adf5b18cd5acaa12.mesh"
+
+[deps]
+
+files=["res://.godot/imported/cone.obj-097fd8660da7b205adf5b18cd5acaa12.mesh"]
+
+source_file="res://duck_game/hats/cone.obj"
+dest_files=["res://.godot/imported/cone.obj-097fd8660da7b205adf5b18cd5acaa12.mesh", "res://.godot/imported/cone.obj-097fd8660da7b205adf5b18cd5acaa12.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
