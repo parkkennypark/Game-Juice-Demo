@@ -54,6 +54,8 @@ func _physics_process(delta: float) -> void:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 		velocity.z = move_toward(velocity.z, 0, SPEED)
 
+	velocity = velocity.rotated(Vector3.UP, -rotation.y)
+
 	move_and_slide()
 
 func get_mouse_pos() -> Vector3:

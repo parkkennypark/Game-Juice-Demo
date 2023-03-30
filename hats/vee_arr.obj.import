@@ -1,0 +1,21 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://kob6k224abq4"
+path="res://.godot/imported/vee_arr.obj-98f2127340302ee49d278cbf6074d25b.mesh"
+
+[deps]
+
+files=["res://.godot/imported/vee_arr.obj-98f2127340302ee49d278cbf6074d25b.mesh"]
+
+source_file="res://hats/vee_arr.obj"
+dest_files=["res://.godot/imported/vee_arr.obj-98f2127340302ee49d278cbf6074d25b.mesh", "res://.godot/imported/vee_arr.obj-98f2127340302ee49d278cbf6074d25b.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true

@@ -1,0 +1,48 @@
+[gd_scene load_steps=6 format=3 uid="uid://bg3cme4cq42kk"]
+
+[ext_resource type="ArrayMesh" uid="uid://bw44n41vneko0" path="res://grapes_but_stronger.obj" id="1_5irsr"]
+
+[sub_resource type="GDScript" id="GDScript_rg362"]
+script/source = "extends RigidBody3D
+
+@export var coll : Node3D
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	if global_position.y < -10:
+		queue_free()
+"
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_sf4wy"]
+size = Vector3(0.2, 0.2, 0.2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kb6tb"]
+albedo_color = Color(1, 0.533333, 0.196078, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6clcy"]
+vertex_color_use_as_albedo = true
+
+[node name="Food" type="RigidBody3D" node_paths=PackedStringArray("coll") groups=["Food"]]
+collision_layer = 2
+script = SubResource("GDScript_rg362")
+coll = NodePath("CollisionShape3D")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_sf4wy")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+visible = false
+size = Vector3(0.2, 0.2, 0.2)
+material = SubResource("StandardMaterial3D_kb6tb")
+
+[node name="GrapesButStronger" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -0.00897217, -0.0926656, 0.0152742)
+mesh = ExtResource("1_5irsr")
+surface_material_override/0 = SubResource("StandardMaterial3D_6clcy")
+
+[node name="AnimationTree" type="AnimationTree" parent="."]
