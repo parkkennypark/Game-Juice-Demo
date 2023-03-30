@@ -4,3 +4,13 @@ res://Box.tscn
 res://Wiggle.tres
 res://Player.gd
 res://Wiggle.gdshader
+res://WiggleNoise.tres
+res://Target.tscn
+res://Target_Big.tscn
+res://Bullet.tscn
+res://Bullet.gd
+res://Target.gd
+res://CameraDriver.gd
+res://Global.gd
+res://addons/shake/Shake.gd
+res://FireParticles.tscn

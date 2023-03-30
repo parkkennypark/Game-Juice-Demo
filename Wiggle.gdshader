@@ -20,8 +20,8 @@ void vertex() {
 	vec2 uv = vec2(UV.x + time, UV.y + time);
 	vec3 noise = texture(noise_texture, uv).rgb;
 	
-	UV=UV*uv1_scale.xy+uv1_offset.xy;
-	VERTEX += noise * strength;
+	UV = UV * uv1_scale.xy + uv1_offset.xy;
+	VERTEX += (noise - 0.5) * strength;
 }
 
 

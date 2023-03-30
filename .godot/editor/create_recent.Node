@@ -1,6 +1,13 @@
-CSGSphere3D
-Node3D
+AnimationPlayer
 CSGCylinder3D
+GPUParticlesCollisionBox3D
+Shake
+CSGBox3D
+CSGSphere3D
+CollisionShape3D
+CharacterBody3D
+StaticBody3D
+Node3D
 ColorRect
 MeshInstance3D
 Sprite3D
@@ -8,11 +15,8 @@ Decal
 Label
 Panel
 CanvasLayer
-CollisionShape3D
-CharacterBody3D
 RemoteTransform3D
 GPUParticles3D
 DirectionalLight3D
-CSGBox3D
 Camera3D
 WorldEnvironment

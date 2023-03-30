@@ -1,0 +1,48 @@
+[gd_scene load_steps=8 format=3 uid="uid://c3eboih70go0h"]
+
+[sub_resource type="Gradient" id="Gradient_fy7h5"]
+colors = PackedColorArray(1, 0.41, 0.41, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_e3vf1"]
+gradient = SubResource("Gradient_fy7h5")
+
+[sub_resource type="Curve" id="Curve_hp1p2"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_7g3jt"]
+curve = SubResource("Curve_hp1p2")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_hfgmk"]
+lifetime_randomness = 0.33
+direction = Vector3(0, 0, 1)
+gravity = Vector3(0, -19.6, 0)
+initial_velocity_min = 5.65
+initial_velocity_max = 6.87
+scale_min = 0.4
+scale_max = 0.8
+scale_curve = SubResource("CurveTexture_7g3jt")
+color_ramp = SubResource("GradientTexture1D_e3vf1")
+collision_mode = 1
+collision_friction = 0.25
+collision_bounce = 0.56
+collision_use_scale = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xs13g"]
+render_priority = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_color = Color(1, 1, 0, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_e7s0m"]
+material = SubResource("StandardMaterial3D_xs13g")
+radius = 0.2
+height = 0.4
+
+[node name="FireParticles" type="GPUParticles3D"]
+lifetime = 0.6
+one_shot = true
+explosiveness = 1.0
+trail_enabled = true
+process_material = SubResource("ParticleProcessMaterial_hfgmk")
+draw_pass_1 = SubResource("SphereMesh_e7s0m")
