@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3 uid="uid://b5wm1dbf8xj4y"]
+[gd_scene load_steps=37 format=3 uid="uid://b5wm1dbf8xj4y"]
 
 [ext_resource type="ArrayMesh" uid="uid://bsbe4f0d6hfok" path="res://Bubba.obj" id="1_qvgd7"]
 [ext_resource type="Script" path="res://addons/jm_pp_outlines/jm_pp_outlines_camera.gd" id="1_woct7"]
@@ -10,6 +10,7 @@
 [ext_resource type="FontFile" uid="uid://dpac28rujlg6v" path="res://fonts/RobotoCondensed-Italic.ttf" id="4_qylyd"]
 [ext_resource type="PackedScene" uid="uid://mkh7y7yikxqm" path="res://addons/post_processing_tool/PostProcessing_tool.tscn" id="5_c0l1v"]
 [ext_resource type="Texture2D" uid="uid://ci6eco0stogau" path="res://Dash.png" id="6_m0w5b"]
+[ext_resource type="Texture2D" uid="uid://bo08me4s6sxqs" path="res://WiggleNoise.tres" id="8_jn480"]
 [ext_resource type="ArrayMesh" uid="uid://dh1ebgux0k3od" path="res://models/target.obj" id="11_xiwt0"]
 [ext_resource type="Shader" path="res://Wiggle.gdshader" id="13_v73er"]
 
@@ -57,7 +58,6 @@ size = Vector2(0.2, 1)
 render_priority = 0
 shader = ExtResource("13_v73er")
 shader_parameter/albedo = Color(1, 1, 1, 1)
-shader_parameter/point_size = null
 shader_parameter/roughness = 0.0
 shader_parameter/uv1_scale = null
 shader_parameter/uv1_offset = null
@@ -66,11 +66,15 @@ shader_parameter/uv2_offset = null
 shader_parameter/normal_offset = 0.01
 shader_parameter/time_influence = 12.0
 shader_parameter/y_div = 2.87
+shader_parameter/strength = 0.05
+shader_parameter/fps = 6.0
+shader_parameter/noise_texture = ExtResource("8_jn480")
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_3ffes"]
 radius = 0.3
 height = 1.5
-rings = 32
+radial_segments = 12
+rings = 12
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xjqc8"]
 diffuse_mode = 3
@@ -123,7 +127,6 @@ emission = Color(1, 1, 1, 1)
 render_priority = 0
 shader = ExtResource("13_v73er")
 shader_parameter/albedo = Color(0.960784, 0.219608, 0.180392, 1)
-shader_parameter/point_size = 1.0
 shader_parameter/roughness = 1.0
 shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv1_offset = Vector3(0, 0, 0)
@@ -132,12 +135,14 @@ shader_parameter/uv2_offset = Vector3(0, 0, 0)
 shader_parameter/normal_offset = 0.01
 shader_parameter/time_influence = 12.0
 shader_parameter/y_div = 2.87
+shader_parameter/strength = 0.05
+shader_parameter/fps = 6.0
+shader_parameter/noise_texture = ExtResource("8_jn480")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_37tvt"]
 render_priority = 0
 shader = ExtResource("13_v73er")
 shader_parameter/albedo = Color(1, 1, 1, 1)
-shader_parameter/point_size = 1.0
 shader_parameter/roughness = 1.0
 shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv1_offset = Vector3(0, 0, 0)
@@ -146,6 +151,9 @@ shader_parameter/uv2_offset = Vector3(0, 0, 0)
 shader_parameter/normal_offset = 0.01
 shader_parameter/time_influence = 12.0
 shader_parameter/y_div = 2.87
+shader_parameter/strength = 0.05
+shader_parameter/fps = 6.0
+shader_parameter/noise_texture = ExtResource("8_jn480")
 
 [node name="Node3D" type="Node3D"]
 
@@ -174,7 +182,7 @@ material = SubResource("StandardMaterial3D_1fqam")
 [node name="Floor4" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.02446, -5.74997)
 use_collision = true
-size = Vector3(8, 0.1, 8)
+size = Vector3(8.01, 0.1, 8.01)
 material = SubResource("StandardMaterial3D_lyqax")
 
 [node name="Camera" type="Node3D" parent="." node_paths=PackedStringArray("follow_target")]
@@ -189,6 +197,7 @@ current = true
 size = 10.0
 far = 35.12
 script = ExtResource("1_woct7")
+depth_outline_scale = 8.0
 max_edge_alpha = 1.0
 
 [node name="Player" type="CharacterBody3D" parent="."]

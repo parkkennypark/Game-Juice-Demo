@@ -27,7 +27,7 @@ void fragment() {
 [resource]
 render_priority = 0
 shader = SubResource("Shader_iv014")
-shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/albedo = Color(0.568627, 0.568627, 0.568627, 1)
 shader_parameter/normal_offset = 0.01
 shader_parameter/time_influence = 12.0
 shader_parameter/y_div = 2.87
