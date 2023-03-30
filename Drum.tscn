@@ -58,6 +58,15 @@ uv1_scale = Vector3(10, 10, 10)
 [sub_resource type="PlaneMesh" id="PlaneMesh_p55km"]
 size = Vector2(0.2, 1)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k4tya"]
+transparency = 1
+shading_mode = 0
+diffuse_mode = 3
+albedo_color = Color(1, 0.760784, 0, 1)
+
+[sub_resource type="PrismMesh" id="PrismMesh_wygkm"]
+size = Vector3(0.6, 0.4, 0.01)
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_y1yxh"]
 render_priority = 0
 shader = ExtResource("13_v73er")
@@ -81,17 +90,8 @@ diffuse_mode = 3
 albedo_color = Color(0.607843, 0.701961, 0.647059, 1)
 roughness = 0.0
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k4tya"]
-transparency = 1
-shading_mode = 0
-diffuse_mode = 3
-albedo_color = Color(1, 0.760784, 0, 1)
-
 [sub_resource type="PrismMesh" id="PrismMesh_ttthl"]
 size = Vector3(1, 0.684, 0.1)
-
-[sub_resource type="PrismMesh" id="PrismMesh_wygkm"]
-size = Vector3(0.6, 0.4, 0.01)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lumjj"]
 transparency = 1
@@ -205,26 +205,26 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("Body:position")
+tracks/2/path = NodePath(".:position")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.3),
-"transitions": PackedFloat32Array(1, 1),
+"times": PackedFloat32Array(),
+"transitions": PackedFloat32Array(),
 "update": 0,
-"values": [Vector3(0, 0.75, 0), Vector3(0, 0.75, 0)]
+"values": []
 }
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("Body:rotation")
+tracks/3/path = NodePath(".:rotation")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.3),
-"transitions": PackedFloat32Array(2.54912, 1),
+"times": PackedFloat32Array(0, 0.0376959, 0.5),
+"transitions": PackedFloat32Array(1, 0.450625, 1),
 "update": 0,
-"values": [Vector3(0, -1.5708, 0.0872665), Vector3(0, -1.5708, 0)]
+"values": [Vector3(0, 0, 0), Vector3(-0.436332, 0, 0), Vector3(0, 0, 0)]
 }
 
 [sub_resource type="Animation" id="Animation_7t8xr"]
@@ -256,26 +256,14 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("Body:position")
+tracks/2/path = NodePath(".:rotation")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector3(0, 0.75, 0)]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Body:rotation")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(0, -1.5708, 0)]
+"values": [Vector3(0, 0, 0)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_wftbq"]
@@ -379,6 +367,24 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.558, 0.5)
 material_override = SubResource("StandardMaterial3D_4v87j")
 mesh = SubResource("PlaneMesh_p55km")
 
+[node name="CSGCylinder3D2" type="CSGCylinder3D" parent="Player"]
+material_override = SubResource("StandardMaterial3D_k4tya")
+radius = 1.0336
+height = 0.1
+sides = 16
+
+[node name="CSGCylinder3D3" type="CSGCylinder3D" parent="Player/CSGCylinder3D2"]
+operation = 2
+radius = 0.913452
+height = 0.1
+sides = 16
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="Player/CSGCylinder3D2"]
+transform = Transform3D(-1, -4.37114e-08, 4.37114e-08, 4.37114e-08, -4.37114e-08, 1, -4.37114e-08, 1, 4.37114e-08, -7.90647e-08, 0.00269869, 1.1423)
+material_override = SubResource("StandardMaterial3D_k4tya")
+mesh = SubResource("PrismMesh_wygkm")
+skeleton = NodePath("../..")
+
 [node name="Model" type="Node3D" parent="Player"]
 
 [node name="Body" type="MeshInstance3D" parent="Player/Model"]
@@ -400,24 +406,6 @@ visible = false
 material_override = SubResource("StandardMaterial3D_k4tya")
 mesh = SubResource("PrismMesh_ttthl")
 skeleton = NodePath("../..")
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="Player/Model"]
-transform = Transform3D(-1, -4.37114e-08, 4.37114e-08, 4.37114e-08, -4.37114e-08, 1, -4.37114e-08, 1, 4.37114e-08, -7.90647e-08, 0.00269869, 1.1423)
-material_override = SubResource("StandardMaterial3D_k4tya")
-mesh = SubResource("PrismMesh_wygkm")
-skeleton = NodePath("../..")
-
-[node name="CSGCylinder3D2" type="CSGCylinder3D" parent="Player/Model"]
-material_override = SubResource("StandardMaterial3D_k4tya")
-radius = 1.0336
-height = 0.1
-sides = 16
-
-[node name="CSGCylinder3D3" type="CSGCylinder3D" parent="Player/Model/CSGCylinder3D2"]
-operation = 2
-radius = 0.913452
-height = 0.1
-sides = 16
 
 [node name="MuzzleFlash" type="Node3D" parent="Player/Model"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.452559, 0.701614, 0.782907)
