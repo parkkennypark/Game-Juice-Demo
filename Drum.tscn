@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=3 uid="uid://b5wm1dbf8xj4y"]
+[gd_scene load_steps=36 format=3 uid="uid://b5wm1dbf8xj4y"]
 
 [ext_resource type="ArrayMesh" uid="uid://bsbe4f0d6hfok" path="res://Bubba.obj" id="1_qvgd7"]
 [ext_resource type="Script" path="res://addons/jm_pp_outlines/jm_pp_outlines_camera.gd" id="1_woct7"]
@@ -10,7 +10,6 @@
 [ext_resource type="FontFile" uid="uid://dpac28rujlg6v" path="res://fonts/RobotoCondensed-Italic.ttf" id="4_qylyd"]
 [ext_resource type="PackedScene" uid="uid://mkh7y7yikxqm" path="res://addons/post_processing_tool/PostProcessing_tool.tscn" id="5_c0l1v"]
 [ext_resource type="Texture2D" uid="uid://ci6eco0stogau" path="res://Dash.png" id="6_m0w5b"]
-[ext_resource type="Texture2D" uid="uid://bo08me4s6sxqs" path="res://WiggleNoise.tres" id="8_jn480"]
 [ext_resource type="ArrayMesh" uid="uid://dh1ebgux0k3od" path="res://models/target.obj" id="11_xiwt0"]
 [ext_resource type="Shader" path="res://Wiggle.gdshader" id="13_v73er"]
 
@@ -25,6 +24,7 @@ background_mode = 1
 background_color = Color(0.121569, 0.160784, 0.25098, 1)
 ambient_light_source = 2
 ambient_light_color = Color(0.478431, 0.835294, 1, 1)
+ssao_enabled = true
 adjustment_color_correction = SubResource("GradientTexture1D_nhpqr")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1fqam"]
@@ -63,12 +63,8 @@ shader_parameter/uv1_scale = null
 shader_parameter/uv1_offset = null
 shader_parameter/uv2_scale = null
 shader_parameter/uv2_offset = null
-shader_parameter/normal_offset = 0.01
-shader_parameter/time_influence = 12.0
-shader_parameter/y_div = 2.87
 shader_parameter/strength = 0.05
 shader_parameter/fps = 6.0
-shader_parameter/noise_texture = ExtResource("8_jn480")
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_3ffes"]
 radius = 0.3
@@ -132,12 +128,8 @@ shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv1_offset = Vector3(0, 0, 0)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = Vector3(0, 0, 0)
-shader_parameter/normal_offset = 0.01
-shader_parameter/time_influence = 12.0
-shader_parameter/y_div = 2.87
 shader_parameter/strength = 0.05
 shader_parameter/fps = 6.0
-shader_parameter/noise_texture = ExtResource("8_jn480")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_37tvt"]
 render_priority = 0
@@ -148,12 +140,8 @@ shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv1_offset = Vector3(0, 0, 0)
 shader_parameter/uv2_scale = Vector3(1, 1, 1)
 shader_parameter/uv2_offset = Vector3(0, 0, 0)
-shader_parameter/normal_offset = 0.01
-shader_parameter/time_influence = 12.0
-shader_parameter/y_div = 2.87
 shader_parameter/strength = 0.05
 shader_parameter/fps = 6.0
-shader_parameter/noise_texture = ExtResource("8_jn480")
 
 [node name="Node3D" type="Node3D"]
 

@@ -10,29 +10,18 @@ uniform vec3 uv1_offset;
 uniform vec3 uv2_scale;
 uniform vec3 uv2_offset;
 
-uniform float normal_offset : hint_range(0, 1, 0.01) = 0.01;
-uniform float time_influence : hint_range(0, 50) = 12;
-uniform float y_div : hint_range(0, 10, .1) = 2.87;
-
 uniform float strength = 0.05;
 uniform float fps = 6;
-uniform sampler2D noise_texture;
+global uniform sampler2D noise_texture;
 
 
 void vertex() {
-//	float time = round(TIME * speed);
 	float time = sin(round(TIME * fps));
 	vec2 uv = vec2(UV.x + time, UV.y + time);
 	vec3 noise = texture(noise_texture, uv).rgb;
-//	float noise_r = texture(noise_texture, uv).r;
-//	float noise_g = texture(noise_texture, uv).g;
-//	float noise_b = texture(noise_texture, uv).b;
 	
 	UV=UV*uv1_scale.xy+uv1_offset.xy;
 	VERTEX += noise * strength;
-//    VERTEX.x += sin(VERTEX.y * y_div + round(TIME * time_influence)) * normal_offset;
-//    VERTEX.y += sin(VERTEX.x * y_div + round(TIME * time_influence)) * normal_offset;
-//    VERTEX.z += sin(VERTEX.y * y_div + round(TIME * time_influence)) * normal_offset;
 }
 
 

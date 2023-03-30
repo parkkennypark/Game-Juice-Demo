@@ -64,3 +64,10 @@ ui_down={
 
 3d_render/layer_1="default"
 3d_render/layer_2="player"
+
+[shader_globals]
+
+noise_texture={
+"type": "sampler2D",
+"value": "res://WiggleNoise.tres"
+}
