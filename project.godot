@@ -11,18 +11,17 @@ config_version=5
 [application]
 
 config/name="Juice"
-run/main_scene="res://duck_game/Duck.tscn"
+run/main_scene="res://Juiced.tscn"
 config/features=PackedStringArray("4.0", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
 Global="*res://Global.gd"
+SceneChanger="*res://SceneChanger.tscn"
 
 [display]
 
-window/size/viewport_width=576
-window/size/viewport_height=324
 window/size/window_width_override=1152
 window/size/window_height_override=648
 
@@ -107,4 +106,12 @@ anti_aliasing/quality/msaa_3d=3
 noise_texture={
 "type": "sampler2D",
 "value": "res://WiggleNoise.tres"
+}
+wiggle={
+"type": "bool",
+"value": false
+}
+enable_color={
+"type": "bool",
+"value": true
 }

@@ -1,10 +1,10 @@
-[gd_scene load_steps=25 format=3]
+[gd_scene load_steps=25 format=3 uid="uid://u2s1t0gji515"]
 
 [ext_resource type="PackedScene" uid="uid://drxxms1x3qa7s" path="res://duck_game/lowpoly_floating_island.glb" id="1_24a2e"]
 [ext_resource type="ArrayMesh" uid="uid://vioop6rcr8lr" path="res://duck_game/duck.obj" id="4_7pr0d"]
-[ext_resource type="PackedScene" path="res://DuckFood.tscn" id="4_ccxgy"]
+[ext_resource type="PackedScene" path="res://duck_game/DuckFood.tscn" id="4_ccxgy"]
 [ext_resource type="Script" path="res://addons/jm_pp_outlines/jm_pp_outlines_camera.gd" id="4_ekva7"]
-[ext_resource type="PackedScene" path="res://DuckGuy.tscn" id="5_y7fqs"]
+[ext_resource type="PackedScene" path="res://duck_game/DuckGuy.tscn" id="5_y7fqs"]
 [ext_resource type="FontFile" uid="uid://f1s61kqc4dld" path="res://fonts/RobotoCondensed-Bold.ttf" id="7_3w503"]
 [ext_resource type="PackedScene" uid="uid://mkh7y7yikxqm" path="res://addons/post_processing_tool/PostProcessing_tool.tscn" id="8_mc4el"]
 [ext_resource type="FontFile" uid="uid://dpac28rujlg6v" path="res://fonts/RobotoCondensed-Italic.ttf" id="8_px7k8"]
@@ -217,6 +217,21 @@ density = 3.5
 vertex_color_use_as_albedo = true
 albedo_texture = ExtResource("9_476vr")
 
+[sub_resource type="Animation" id="Animation_p7biu"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0, 0)]
+}
+
 [sub_resource type="Animation" id="Animation_gg1vo"]
 resource_name = "spin"
 length = 9.0
@@ -232,21 +247,6 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Vector3(0, 0, 0), Vector3(0, 6.28319, 0)]
-}
-
-[sub_resource type="Animation" id="Animation_p7biu"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:rotation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector3(0, 0, 0)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_x2a3g"]

@@ -1,18 +1,32 @@
 extends StaticBody3D
 
+@export var health : int = 3
+@export var damaged_particle_scene : PackedScene
 
-# Called when the node enters the scene tree for the first time.
+signal destroyed
+
+
 func _ready() -> void:
 	$Target.material_overlay = $Target.material_overlay.duplicate()
-	pass # Replace with function body.
 
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
 
 func on_collided():
 	Global.camera_shake.start_one_shot(0.2, 1)
 	$AnimationPlayer.play("Hit")
 	$AnimationPlayer.seek(0, true)
-	pass
+	
+	var particles = damaged_particle_scene.instantiate()
+	get_tree().root.add_child(particles)
+	particles.global_position = global_position + Global.get_random_pos_in_sphere()
+	
+	health -= 1
+	
+	if health <= 0:
+		destroy()
+
+func destroy():
+	Global.camera_shake.start_one_shot(0.5, 2)
+	
+	remove_from_group("Target")
+	destroyed.emit()
+	queue_free()

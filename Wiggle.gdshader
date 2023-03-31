@@ -13,7 +13,7 @@ uniform vec3 uv2_offset;
 uniform float strength = 0.05;
 uniform float fps = 6;
 global uniform sampler2D noise_texture;
-
+global uniform bool wiggle;
 
 void vertex() {
 	float time = sin(round(TIME * fps));
@@ -21,7 +21,9 @@ void vertex() {
 	vec3 noise = texture(noise_texture, uv).rgb;
 	
 	UV = UV * uv1_scale.xy + uv1_offset.xy;
-	VERTEX += (noise - 0.5) * strength;
+	if (wiggle) {
+		VERTEX += (noise - 0.5) * strength;
+	}
 }
 
 

@@ -1,0 +1,43 @@
+[gd_scene load_steps=5 format=3 uid="uid://d0hhstvd35hkw"]
+
+[ext_resource type="Script" path="res://SceneChanger.gd" id="1_5d4pd"]
+[ext_resource type="Script" path="res://Transition.gd" id="1_jxlmb"]
+
+[sub_resource type="Shader" id="Shader_2pf5f"]
+code = "shader_type canvas_item;
+
+// Ranges from 0 to 1 over the course of the transition.
+// We use this to actually animate the shader.
+uniform float progress : hint_range(0, 1);
+
+// Size of each diamond, in pixels.
+uniform float diamondPixelSize = 10;
+
+void fragment() {
+	float xFraction = fract(FRAGCOORD.x / diamondPixelSize);
+	float yFraction = fract(FRAGCOORD.y / diamondPixelSize);
+	float xDistance = abs(xFraction - 0.5);
+	float yDistance = abs(yFraction - 0.5);
+	if (xDistance + yDistance + UV.x + UV.y > progress * 4.0) {
+		discard;
+	}
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6lvx4"]
+shader = SubResource("Shader_2pf5f")
+shader_parameter/progress = 0.324
+shader_parameter/diamondPixelSize = 30.0
+
+[node name="SceneChanger" type="CanvasLayer"]
+layer = 5
+script = ExtResource("1_5d4pd")
+
+[node name="Diamonds" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_6lvx4")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+script = ExtResource("1_jxlmb")

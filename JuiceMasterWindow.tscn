@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://c4klw5kf82b4q"]
+
+[ext_resource type="PackedScene" uid="uid://c4wmwra36018r" path="res://JuiceMasterUI.tscn" id="1_4ngmp"]
+[ext_resource type="Script" path="res://JuiceMaster.gd" id="1_ds1td"]
+
+[node name="Window" type="Window"]
+title = "Juice Master"
+position = Vector2i(40, 80)
+size = Vector2i(400, 800)
+unresizable = true
+always_on_top = true
+script = ExtResource("1_ds1td")
+
+[node name="UI" parent="." instance=ExtResource("1_4ngmp")]
+offset_right = 0.0
+offset_bottom = 0.0

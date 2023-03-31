@@ -1,0 +1,194 @@
+[gd_scene load_steps=7 format=3 uid="uid://c4wmwra36018r"]
+
+[ext_resource type="FontFile" uid="uid://f1s61kqc4dld" path="res://fonts/RobotoCondensed-Bold.ttf" id="1_4ipv1"]
+[ext_resource type="FontFile" uid="uid://dpac28rujlg6v" path="res://fonts/RobotoCondensed-Italic.ttf" id="2_gh0y3"]
+[ext_resource type="FontFile" uid="uid://5xhctmcmxw4c" path="res://fonts/RobotoCondensed-Regular.ttf" id="2_xhwjw"]
+[ext_resource type="Script" path="res://JuiceOption.gd" id="4_huhlv"]
+
+[sub_resource type="Theme" id="Theme_75ws1"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_50xf2"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -752.0
+offset_bottom = 152.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_75ws1")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.117647, 0.117647, 0.117647, 1)
+
+[node name="ColorRect2" type="ColorRect" parent="."]
+offset_left = -158.0
+offset_top = 35.0
+offset_right = 527.0
+offset_bottom = 256.0
+rotation = -0.476687
+color = Color(0.0588235, 0.0862745, 0.223529, 1)
+
+[node name="TargetsLeftLabel" type="RichTextLabel" parent="."]
+material = SubResource("ShaderMaterial_50xf2")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 13.0
+offset_top = 12.0
+offset_right = -15.0
+offset_bottom = -695.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(-61, 157)
+theme_override_constants/shadow_offset_x = -3
+theme_override_constants/shadow_offset_y = 6
+theme_override_fonts/normal_font = ExtResource("1_4ipv1")
+theme_override_font_sizes/normal_font_size = 68
+bbcode_enabled = true
+text = "[wave][center]Juicemaster"
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 247.0
+offset_top = 91.0
+offset_right = 389.0
+offset_bottom = 117.0
+theme_override_fonts/font = ExtResource("2_xhwjw")
+text = "(patent pending)"
+horizontal_alignment = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -174.0
+offset_top = -263.0
+offset_right = 174.0
+offset_bottom = 263.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_gh0y3")
+theme_override_font_sizes/font_size = 24
+text = "Visuals"
+
+[node name="CheckButton6" type="CheckButton" parent="VBoxContainer"]
+layout_mode = 2
+text = "Object Colors"
+script = ExtResource("4_huhlv")
+option_name = "colors"
+
+[node name="CheckButton" type="CheckButton" parent="VBoxContainer"]
+layout_mode = 2
+text = "Ambient Light"
+script = ExtResource("4_huhlv")
+option_name = "light"
+
+[node name="CheckButton2" type="CheckButton" parent="VBoxContainer"]
+layout_mode = 2
+text = "Toon Shader"
+script = ExtResource("4_huhlv")
+option_name = "toon"
+
+[node name="CheckButton3" type="CheckButton" parent="VBoxContainer"]
+layout_mode = 2
+text = "Outlines"
+script = ExtResource("4_huhlv")
+option_name = "outlines"
+
+[node name="CheckButton4" type="CheckButton" parent="VBoxContainer"]
+layout_mode = 2
+text = "Wiggle"
+script = ExtResource("4_huhlv")
+option_name = "wiggle"
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 20
+
+[node name="Label2" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_gh0y3")
+theme_override_font_sizes/font_size = 24
+text = "Feedback"
+
+[node name="CheckButton7" type="CheckButton" parent="VBoxContainer"]
+layout_mode = 2
+text = "Animations"
+script = ExtResource("4_huhlv")
+option_name = "animations"
+
+[node name="CheckButton9" type="CheckButton" parent="VBoxContainer"]
+layout_mode = 2
+text = "Target Hit Flash Effect"
+script = ExtResource("4_huhlv")
+option_name = "hit_flash"
+
+[node name="CheckButton8" type="CheckButton" parent="VBoxContainer"]
+layout_mode = 2
+text = "Particle Effects"
+script = ExtResource("4_huhlv")
+option_name = "particles"
+
+[node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 20
+
+[node name="UI" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_gh0y3")
+theme_override_font_sizes/font_size = 24
+text = "Interface"
+
+[node name="CheckButton5" type="CheckButton" parent="VBoxContainer"]
+layout_mode = 2
+text = "Better UI"
+script = ExtResource("4_huhlv")
+option_name = "ui"
+
+[node name="CheckButton10" type="CheckButton" parent="VBoxContainer"]
+layout_mode = 2
+text = "Transitions"
+script = ExtResource("4_huhlv")
+option_name = "transitions"
+
+[node name="MarginContainer3" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Enable All"
+
+[node name="Button2" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Disable All"

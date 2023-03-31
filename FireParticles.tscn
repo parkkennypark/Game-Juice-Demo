@@ -1,4 +1,6 @@
-[gd_scene load_steps=8 format=3 uid="uid://c3eboih70go0h"]
+[gd_scene load_steps=9 format=3 uid="uid://c3eboih70go0h"]
+
+[ext_resource type="Script" path="res://Particles.gd" id="1_van1u"]
 
 [sub_resource type="Gradient" id="Gradient_fy7h5"]
 colors = PackedColorArray(1, 0.41, 0.41, 1, 1, 1, 1, 1)
@@ -40,9 +42,10 @@ radius = 0.2
 height = 0.4
 
 [node name="FireParticles" type="GPUParticles3D"]
+emitting = false
 lifetime = 0.6
 one_shot = true
 explosiveness = 1.0
-trail_enabled = true
 process_material = SubResource("ParticleProcessMaterial_hfgmk")
 draw_pass_1 = SubResource("SphereMesh_e7s0m")
+script = ExtResource("1_van1u")

@@ -1,7 +1,8 @@
-[gd_scene load_steps=11 format=3 uid="uid://cwhdkfjnplw43"]
+[gd_scene load_steps=12 format=3 uid="uid://cwhdkfjnplw43"]
 
 [ext_resource type="Script" path="res://Target.gd" id="1_e7jes"]
 [ext_resource type="ArrayMesh" uid="uid://dh1ebgux0k3od" path="res://models/target.obj" id="1_pdfwr"]
+[ext_resource type="PackedScene" uid="uid://bxgjdsaiwywxm" path="res://DamageParticles.tscn" id="2_oirm2"]
 [ext_resource type="Shader" path="res://Wiggle.gdshader" id="2_tqxt5"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_28f80"]
@@ -100,10 +101,12 @@ _data = {
 height = 0.3
 radius = 0.8
 
-[node name="Target" type="StaticBody3D"]
+[node name="Target" type="StaticBody3D" groups=["Target"]]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 5.14254, 0.916422, -0.238842)
 collision_layer = 4
 script = ExtResource("1_e7jes")
+health = 1
+damaged_particle_scene = ExtResource("2_oirm2")
 
 [node name="Target" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 0, 0, 0)
