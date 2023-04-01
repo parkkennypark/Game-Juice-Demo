@@ -25,6 +25,8 @@ func on_target_destroyed():
 func update_target_left_label():
 	var targets_left = get_targets_left()
 	targets_left_label.text = str(targets_left)
-	$TargetsLeftLabel/AnimationPlayer.play("Update")
-	$TargetsLeftLabel/AnimationPlayer.seek(0, false)
+	
+	if Global.juice_master.get_toggle("ui_animations"):
+		$TargetsLeftLabel/AnimationPlayer.play("Update")
+		$TargetsLeftLabel/AnimationPlayer.seek(0, false)
 	

@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://c4wmwra36018r"]
+[gd_scene load_steps=8 format=3 uid="uid://c4wmwra36018r"]
 
 [ext_resource type="FontFile" uid="uid://f1s61kqc4dld" path="res://fonts/RobotoCondensed-Bold.ttf" id="1_4ipv1"]
 [ext_resource type="FontFile" uid="uid://dpac28rujlg6v" path="res://fonts/RobotoCondensed-Italic.ttf" id="2_gh0y3"]
@@ -8,6 +8,9 @@
 [sub_resource type="Theme" id="Theme_75ws1"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_50xf2"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_73byt"]
+bg_color = Color(0, 0, 0, 1)
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -39,6 +42,7 @@ grow_vertical = 2
 color = Color(0.117647, 0.117647, 0.117647, 1)
 
 [node name="ColorRect2" type="ColorRect" parent="."]
+layout_mode = 0
 offset_left = -158.0
 offset_top = 35.0
 offset_right = 527.0
@@ -76,119 +80,188 @@ theme_override_fonts/font = ExtResource("2_xhwjw")
 text = "(patent pending)"
 horizontal_alignment = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
 layout_mode = 1
-anchors_preset = 8
+anchors_preset = 5
 anchor_left = 0.5
-anchor_top = 0.5
 anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -174.0
-offset_top = -263.0
-offset_right = 174.0
-offset_bottom = 263.0
+offset_left = -175.0
+offset_top = 98.0
+offset_right = 176.0
+offset_bottom = 760.0
 grow_horizontal = 2
-grow_vertical = 2
+horizontal_scroll_mode = 3
+vertical_scroll_mode = 3
 
-[node name="Label" type="Label" parent="VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="ScrollContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_gh0y3")
 theme_override_font_sizes/font_size = 24
 text = "Visuals"
 
-[node name="CheckButton6" type="CheckButton" parent="VBoxContainer"]
+[node name="CheckButton6" type="CheckButton" parent="ScrollContainer/VBoxContainer"]
 layout_mode = 2
 text = "Object Colors"
 script = ExtResource("4_huhlv")
 option_name = "colors"
 
-[node name="CheckButton" type="CheckButton" parent="VBoxContainer"]
+[node name="CheckButton" type="CheckButton" parent="ScrollContainer/VBoxContainer"]
 layout_mode = 2
 text = "Ambient Light"
 script = ExtResource("4_huhlv")
 option_name = "light"
 
-[node name="CheckButton2" type="CheckButton" parent="VBoxContainer"]
+[node name="CheckButton2" type="CheckButton" parent="ScrollContainer/VBoxContainer"]
 layout_mode = 2
 text = "Toon Shader"
 script = ExtResource("4_huhlv")
 option_name = "toon"
 
-[node name="CheckButton3" type="CheckButton" parent="VBoxContainer"]
+[node name="CheckButton3" type="CheckButton" parent="ScrollContainer/VBoxContainer"]
 layout_mode = 2
 text = "Outlines"
 script = ExtResource("4_huhlv")
 option_name = "outlines"
 
-[node name="CheckButton4" type="CheckButton" parent="VBoxContainer"]
+[node name="CheckButton4" type="CheckButton" parent="ScrollContainer/VBoxContainer"]
 layout_mode = 2
 text = "Wiggle"
 script = ExtResource("4_huhlv")
 option_name = "wiggle"
 
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="ScrollContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/margin_top = 20
 
-[node name="Label2" type="Label" parent="VBoxContainer"]
+[node name="Label2" type="Label" parent="ScrollContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_gh0y3")
 theme_override_font_sizes/font_size = 24
 text = "Feedback"
 
-[node name="CheckButton7" type="CheckButton" parent="VBoxContainer"]
+[node name="CheckButton13" type="CheckButton" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+text = "Weapon Knockback"
+script = ExtResource("4_huhlv")
+option_name = "knockback"
+
+[node name="CheckButton7" type="CheckButton" parent="ScrollContainer/VBoxContainer"]
 layout_mode = 2
 text = "Animations"
 script = ExtResource("4_huhlv")
 option_name = "animations"
 
-[node name="CheckButton9" type="CheckButton" parent="VBoxContainer"]
-layout_mode = 2
-text = "Target Hit Flash Effect"
-script = ExtResource("4_huhlv")
-option_name = "hit_flash"
-
-[node name="CheckButton8" type="CheckButton" parent="VBoxContainer"]
+[node name="CheckButton8" type="CheckButton" parent="ScrollContainer/VBoxContainer"]
 layout_mode = 2
 text = "Particle Effects"
 script = ExtResource("4_huhlv")
 option_name = "particles"
 
-[node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer"]
+[node name="CheckButton11" type="CheckButton" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+text = "Screen Shake on Hit"
+script = ExtResource("4_huhlv")
+option_name = "shake"
+
+[node name="CheckButton9" type="CheckButton" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+text = "Target Flash on Hit"
+script = ExtResource("4_huhlv")
+option_name = "hit_flash"
+
+[node name="MarginContainer2" type="MarginContainer" parent="ScrollContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/margin_top = 20
 
-[node name="UI" type="Label" parent="VBoxContainer"]
+[node name="UI" type="Label" parent="ScrollContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_gh0y3")
 theme_override_font_sizes/font_size = 24
 text = "Interface"
 
-[node name="CheckButton5" type="CheckButton" parent="VBoxContainer"]
+[node name="CheckButton5" type="CheckButton" parent="ScrollContainer/VBoxContainer"]
 layout_mode = 2
-text = "Better UI"
+text = "Better Layout/Design"
 script = ExtResource("4_huhlv")
-option_name = "ui"
+option_name = "ui_design"
 
-[node name="CheckButton10" type="CheckButton" parent="VBoxContainer"]
+[node name="CheckButton12" type="CheckButton" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+text = "UI Animations"
+script = ExtResource("4_huhlv")
+option_name = "ui_animations"
+
+[node name="MarginContainer5" type="MarginContainer" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="ScrollContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Enable All"
+
+[node name="Button2" type="Button" parent="ScrollContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Disable All"
+
+[node name="MarginContainer4" type="MarginContainer" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 20
+
+[node name="Panel" type="PanelContainer" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_73byt")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ScrollContainer/VBoxContainer/Panel"]
+layout_mode = 2
+
+[node name="Label3" type="Label" parent="ScrollContainer/VBoxContainer/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_gh0y3")
+theme_override_font_sizes/font_size = 24
+text = "Extras"
+
+[node name="CheckButton11" type="CheckButton" parent="ScrollContainer/VBoxContainer/Panel/VBoxContainer"]
+layout_mode = 2
+text = "Ambient Occlusion"
+script = ExtResource("4_huhlv")
+option_name = "ambient_occlusion"
+
+[node name="CheckButton12" type="CheckButton" parent="ScrollContainer/VBoxContainer/Panel/VBoxContainer"]
+layout_mode = 2
+text = "Bloom"
+script = ExtResource("4_huhlv")
+option_name = "bloom"
+
+[node name="CheckButton13" type="CheckButton" parent="ScrollContainer/VBoxContainer/Panel/VBoxContainer"]
+layout_mode = 2
+text = "High Contrast"
+script = ExtResource("4_huhlv")
+option_name = "high_contrast"
+
+[node name="CheckButton14" type="CheckButton" parent="ScrollContainer/VBoxContainer/Panel/VBoxContainer"]
+layout_mode = 2
+text = "Fog"
+script = ExtResource("4_huhlv")
+option_name = "fog"
+
+[node name="CheckButton10" type="CheckButton" parent="ScrollContainer/VBoxContainer/Panel/VBoxContainer"]
 layout_mode = 2
 text = "Transitions"
 script = ExtResource("4_huhlv")
 option_name = "transitions"
 
-[node name="MarginContainer3" type="MarginContainer" parent="VBoxContainer"]
+[node name="CheckButton15" type="CheckButton" parent="ScrollContainer/VBoxContainer/Panel/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/margin_top = 20
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
-layout_mode = 2
-
-[node name="Button" type="Button" parent="VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Enable All"
-
-[node name="Button2" type="Button" parent="VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Disable All"
+text = "Muzzle Flash Light"
+script = ExtResource("4_huhlv")
+option_name = "muzzle_flash"

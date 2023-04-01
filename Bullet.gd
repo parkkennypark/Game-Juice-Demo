@@ -22,10 +22,11 @@ func on_collided(coll : KinematicCollision3D):
 	if coll.get_collider().has_method("on_collided"):
 		coll.get_collider().on_collided()
 	
-	var particles = collided_particle_scene.instantiate()
-	get_tree().root.add_child(particles)
-	particles.emitting = true
-	particles.global_position = global_position
-	particles.basis = Quaternion.from_euler(Vector3(0, global_rotation.y + PI, 0))
+	if Global.juice_master.get_toggle("particles"):
+		var particles = collided_particle_scene.instantiate()
+		get_tree().root.add_child(particles)
+		particles.emitting = true
+		particles.global_position = global_position
+		particles.basis = Quaternion.from_euler(Vector3(0, global_rotation.y + PI, 0))
 	
 	queue_free()

@@ -88,23 +88,27 @@ func get_mouse_pos() -> Vector3:
 
 
 func fire_projectile():
-	$Model/AnimationPlayer.play("Fire")
-	$Model/AnimationPlayer.seek(0, false)
+	if Global.juice_master.get_toggle("animations"):
+		$Model/AnimationPlayer.play("Fire")
+		$Model/AnimationPlayer.seek(0, false)
 	
 	var projectile = projectile_scene.instantiate()
 	get_tree().root.add_child(projectile)
-	projectile.global_position = global_position + Vector3.UP * 0.5
+	projectile.global_position = $Model/MuzzleFlash.global_position
 	projectile.global_rotation.y = $Model.global_rotation.y + deg_to_rad(randf_range(-spray, spray))
 	
-	var particles = fire_particles_scene.instantiate()
-	get_tree().root.add_child(particles)
-	particles.emitting = true
-	particles.global_position = $Model/MuzzleFlash.global_position
-	particles.global_rotation = $Model.global_rotation
+	if Global.juice_master.get_toggle("particles"):
+		var particles = fire_particles_scene.instantiate()
+		get_tree().root.add_child(particles)
+		particles.emitting = true
+		particles.global_position = $Model/MuzzleFlash.global_position
+		particles.global_rotation = $Model.global_rotation
 	
-	velocity += -global_transform.basis.z * 10
+		flash_muzzle()
+		
+	if Global.juice_master.get_toggle("knockback"):
+		velocity += -global_transform.basis.z * 10
 	
-	flash_muzzle()
 
 func flash_muzzle():
 	muzzle_flash_animation_player.play("Flash")

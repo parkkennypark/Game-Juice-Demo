@@ -109,9 +109,13 @@ noise_texture={
 }
 wiggle={
 "type": "bool",
-"value": false
+"value": true
 }
 enable_color={
+"type": "bool",
+"value": true
+}
+toon={
 "type": "bool",
 "value": true
 }

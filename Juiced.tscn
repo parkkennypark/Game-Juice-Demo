@@ -1,5 +1,6 @@
-[gd_scene load_steps=50 format=3 uid="uid://bpwdnrkmjbvgk"]
+[gd_scene load_steps=55 format=3 uid="uid://bpwdnrkmjbvgk"]
 
+[ext_resource type="Script" path="res://GameManager.gd" id="1_vvsfa"]
 [ext_resource type="Script" path="res://addons/jm_pp_outlines/jm_pp_outlines_camera.gd" id="1_woct7"]
 [ext_resource type="Script" path="res://CameraDriver.gd" id="2_sxxsq"]
 [ext_resource type="FontFile" uid="uid://f1s61kqc4dld" path="res://fonts/RobotoCondensed-Bold.ttf" id="3_7e7yr"]
@@ -15,23 +16,29 @@
 [ext_resource type="Shader" path="res://NoToon.gdshader" id="10_kw4cm"]
 [ext_resource type="Script" path="res://GameCanvas.gd" id="11_26e8g"]
 [ext_resource type="PackedScene" uid="uid://cwhdkfjnplw43" path="res://Target.tscn" id="12_ktbdj"]
+[ext_resource type="Material" uid="uid://cqj1c7bv1hqvt" path="res://Wiggle.tres" id="12_v2nkv"]
 [ext_resource type="PackedScene" uid="uid://pghm3p8iiidf" path="res://Target_Big.tscn" id="13_u6sis"]
 [ext_resource type="Shader" path="res://Wiggle.gdshader" id="13_v73er"]
+[ext_resource type="FontFile" uid="uid://ce636jjvktnop" path="res://fonts/LiberationSans-Regular.ttf" id="18_fgnhl"]
 
-[sub_resource type="Gradient" id="Gradient_armpv"]
-colors = PackedColorArray(0, 0.0166667, 0.25, 1, 1, 1, 1, 1)
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_gxyxg"]
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_tavsb"]
-gradient = SubResource("Gradient_armpv")
+[sub_resource type="Sky" id="Sky_52u1l"]
+sky_material = SubResource("ProceduralSkyMaterial_gxyxg")
 
 [sub_resource type="Environment" id="Environment_0cget"]
 background_mode = 1
 background_color = Color(0.121569, 0.160784, 0.25098, 1)
+sky = SubResource("Sky_52u1l")
 ambient_light_source = 2
 ambient_light_color = Color(0.478431, 0.835294, 1, 1)
+ssao_intensity = 5.95
 glow_bloom = 0.06
 glow_blend_mode = 1
-adjustment_color_correction = SubResource("GradientTexture1D_tavsb")
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.1
+adjustment_enabled = true
+adjustment_contrast = 2.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1fqam"]
 albedo_color = Color(0.568627, 0.568627, 0.568627, 1)
@@ -76,9 +83,15 @@ albedo_color = Color(1, 0.760784, 0, 1)
 [sub_resource type="PrismMesh" id="PrismMesh_wygkm"]
 size = Vector3(0.6, 0.4, 0.01)
 
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_3ffes"]
+radius = 0.3
+height = 1.5
+radial_segments = 12
+rings = 12
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_y1yxh"]
 render_priority = 0
-shader = ExtResource("10_kw4cm")
+shader = ExtResource("13_v73er")
 shader_parameter/albedo = Color(1, 1, 1, 1)
 shader_parameter/roughness = 0.0
 shader_parameter/uv1_scale = null
@@ -88,16 +101,9 @@ shader_parameter/uv2_offset = null
 shader_parameter/strength = 0.05
 shader_parameter/fps = 6.0
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_3ffes"]
-radius = 0.3
-height = 1.5
-radial_segments = 12
-rings = 12
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xjqc8"]
-diffuse_mode = 3
-albedo_color = Color(0.607843, 0.701961, 0.647059, 1)
-roughness = 0.0
+[sub_resource type="CylinderMesh" id="CylinderMesh_aw3ec"]
+height = 0.2
+radial_segments = 16
 
 [sub_resource type="PrismMesh" id="PrismMesh_ttthl"]
 size = Vector3(1, 0.684, 0.1)
@@ -112,6 +118,7 @@ render_priority = 1
 transparency = 1
 emission_enabled = true
 emission = Color(1, 1, 1, 1)
+emission_energy_multiplier = 3.0
 
 [sub_resource type="Animation" id="Animation_t78g7"]
 resource_name = "Flash"
@@ -310,7 +317,7 @@ tracks/1/keys = {
 "values": [0.0]
 }
 
-[sub_resource type="Animation" id="Animation_r0ie4"]
+[sub_resource type="Animation" id="Animation_sar54"]
 resource_name = "Update"
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -340,7 +347,7 @@ tracks/1/keys = {
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_3x8qk"]
 _data = {
 "RESET": SubResource("Animation_di0r4"),
-"Update": SubResource("Animation_r0ie4")
+"Update": SubResource("Animation_sar54")
 }
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hwliu"]
@@ -355,6 +362,39 @@ border_color = Color(0.870588, 0.364706, 0.592157, 1)
 shadow_color = Color(0.870588, 0.364706, 0.592157, 1)
 anti_aliasing = false
 
+[sub_resource type="Animation" id="Animation_8xmgl"]
+resource_name = "Update"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = false
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.7),
+"transitions": PackedFloat32Array(0.31864, 0.435275, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(1.3, 1.3), Vector2(1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = false
+tracks/1/path = NodePath(".:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.7),
+"transitions": PackedFloat32Array(0.554785, 0.482968, 1),
+"update": 0,
+"values": [-0.0523599, 0.0644016, 0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ie4r7"]
+_data = {
+"RESET": SubResource("Animation_di0r4"),
+"Update": SubResource("Animation_8xmgl")
+}
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lviqy"]
 render_priority = 0
 shader = ExtResource("13_v73er")
@@ -368,6 +408,9 @@ shader_parameter/strength = 0.05
 shader_parameter/fps = 6.0
 
 [node name="Node3D" type="Node3D"]
+script = ExtResource("1_vvsfa")
+normal_shader = ExtResource("10_kw4cm")
+toon_shader = ExtResource("13_v73er")
 
 [node name="PostProcessing_tool" parent="." instance=ExtResource("5_c0l1v")]
 adjustment_brightnes = 1.203
@@ -437,7 +480,7 @@ shape = SubResource("CapsuleShape3D_57nyk")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 5, 0, 0, 0)
 
 [node name="Geometry" type="MeshInstance3D" parent="Player/Rotation2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.558, 0.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.462711, 0.7037, 0.667542)
 material_override = SubResource("StandardMaterial3D_hkuse")
 mesh = SubResource("PlaneMesh_p55km")
 
@@ -485,15 +528,14 @@ skeleton = NodePath("../..")
 [node name="Body" type="MeshInstance3D" parent="Player/Model"]
 transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0.75, 0)
 layers = 2
-material_override = SubResource("ShaderMaterial_y1yxh")
 mesh = SubResource("CapsuleMesh_3ffes")
 skeleton = NodePath("../../..")
+surface_material_override/0 = SubResource("ShaderMaterial_y1yxh")
 
-[node name="CSGCylinder3D" type="CSGCylinder3D" parent="Player/Model/Body"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.27525, 0)
-layers = 2
-height = 0.249304
-material = SubResource("StandardMaterial3D_xjqc8")
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Player/Model/Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.278516, 0)
+mesh = SubResource("CylinderMesh_aw3ec")
+surface_material_override/0 = ExtResource("12_v2nkv")
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="Player/Model"]
 transform = Transform3D(1.91069e-15, -4.37114e-08, -1, -1, -4.37114e-08, 0, -4.37114e-08, 1, -4.37114e-08, -1.98541e-08, 0.66919, 0.454208)
@@ -520,6 +562,13 @@ libraries = {
 "": SubResource("AnimationLibrary_jesd6")
 }
 
+[node name="OmniLight3D" type="OmniLight3D" parent="Player/Model/MuzzleFlash"]
+light_color = Color(1, 0.839216, 0.34902, 1)
+light_energy = 2.0
+shadow_enabled = true
+omni_range = 10.0
+omni_attenuation = 1e-05
+
 [node name="Gun" type="CSGBox3D" parent="Player/Model"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.452559, 0.701614, 0.169353)
 size = Vector3(0.2, 0.2, 1)
@@ -532,12 +581,13 @@ libraries = {
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 2.07947, 5.50129, 0)
+light_volumetric_fog_energy = 0.5
 shadow_enabled = true
 
-[node name="GameCanvas" type="CanvasLayer" parent="."]
+[node name="GameCanvasBest" type="CanvasLayer" parent="."]
 script = ExtResource("11_26e8g")
 
-[node name="ColorRect" type="ColorRect" parent="GameCanvas"]
+[node name="ColorRect" type="ColorRect" parent="GameCanvasBest"]
 offset_left = -158.0
 offset_top = 35.0
 offset_right = 527.0
@@ -545,7 +595,7 @@ offset_bottom = 256.0
 rotation = -0.476687
 color = Color(0.0588235, 0.0862745, 0.223529, 1)
 
-[node name="TargetsLeftLabel" type="Label" parent="GameCanvas"]
+[node name="TargetsLeftLabel" type="Label" parent="GameCanvasBest"]
 material = SubResource("ShaderMaterial_vrsrq")
 anchors_preset = 15
 anchor_right = 1.0
@@ -564,12 +614,12 @@ theme_override_fonts/font = ExtResource("3_7e7yr")
 theme_override_font_sizes/font_size = 183
 text = "5"
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="GameCanvas/TargetsLeftLabel"]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="GameCanvasBest/TargetsLeftLabel"]
 libraries = {
 "": SubResource("AnimationLibrary_3x8qk")
 }
 
-[node name="Label5" type="Label" parent="GameCanvas"]
+[node name="Label5" type="Label" parent="GameCanvasBest"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -584,7 +634,7 @@ theme_override_fonts/font = ExtResource("4_qylyd")
 theme_override_font_sizes/font_size = 48
 text = "TARGETS LEFT"
 
-[node name="Shadow" type="Label" parent="GameCanvas/Label5"]
+[node name="Shadow" type="Label" parent="GameCanvasBest/Label5"]
 modulate = Color(0, 0, 0, 1)
 show_behind_parent = true
 layout_mode = 1
@@ -601,7 +651,7 @@ theme_override_fonts/font = ExtResource("4_qylyd")
 theme_override_font_sizes/font_size = 48
 text = "TARGETS LEFT"
 
-[node name="Panel" type="Panel" parent="GameCanvas"]
+[node name="Panel" type="Panel" parent="GameCanvasBest"]
 visible = false
 anchors_preset = 2
 anchor_top = 1.0
@@ -615,7 +665,7 @@ rotation = -0.141177
 theme_override_styles/panel = SubResource("StyleBoxFlat_hwliu")
 script = ExtResource("4_h46km")
 
-[node name="Panel2" type="Panel" parent="GameCanvas/Panel"]
+[node name="Panel2" type="Panel" parent="GameCanvasBest/Panel"]
 show_behind_parent = true
 layout_mode = 1
 anchors_preset = 2
@@ -628,7 +678,7 @@ offset_bottom = 6.0863
 grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_yurmx")
 
-[node name="Label" type="Label" parent="GameCanvas/Panel"]
+[node name="Label" type="Label" parent="GameCanvasBest/Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -644,7 +694,7 @@ theme_override_font_sizes/font_size = 28
 text = "0005"
 vertical_alignment = 1
 
-[node name="Label3" type="Label" parent="GameCanvas/Panel"]
+[node name="Label3" type="Label" parent="GameCanvasBest/Panel"]
 modulate = Color(0, 0, 0, 1)
 layout_mode = 1
 anchors_preset = 15
@@ -660,7 +710,7 @@ theme_override_fonts/font = ExtResource("4_qylyd")
 theme_override_font_sizes/font_size = 21
 text = "bits"
 
-[node name="Label2" type="Label" parent="GameCanvas/Panel"]
+[node name="Label2" type="Label" parent="GameCanvasBest/Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -675,10 +725,12 @@ theme_override_fonts/font = ExtResource("4_qylyd")
 theme_override_font_sizes/font_size = 21
 text = "bits"
 
-[node name="JuiceMaster" type="CanvasLayer" parent="."]
+[node name="GameCanvasBasic" type="CanvasLayer" parent="."]
+visible = false
 script = ExtResource("11_26e8g")
 
-[node name="ColorRect" type="ColorRect" parent="JuiceMaster"]
+[node name="ColorRect" type="ColorRect" parent="GameCanvasBasic"]
+visible = false
 offset_left = -158.0
 offset_top = 35.0
 offset_right = 527.0
@@ -686,63 +738,44 @@ offset_bottom = 256.0
 rotation = -0.476687
 color = Color(0.0588235, 0.0862745, 0.223529, 1)
 
-[node name="TargetsLeftLabel" type="Label" parent="JuiceMaster"]
+[node name="TargetsLeftLabel" type="Label" parent="GameCanvasBasic"]
 material = SubResource("ShaderMaterial_vrsrq")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 35.0
-offset_top = -51.0
-offset_right = 285.0
-offset_bottom = 6.0
+offset_left = 18.0
+offset_top = 17.0
+offset_right = 268.0
+offset_bottom = 74.0
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(-61, 157)
-theme_override_colors/font_shadow_color = Color(1, 0.760784, 0, 1)
 theme_override_constants/shadow_offset_x = -10
 theme_override_constants/shadow_offset_y = 9
-theme_override_fonts/font = ExtResource("3_7e7yr")
-theme_override_font_sizes/font_size = 183
+theme_override_fonts/font = ExtResource("18_fgnhl")
+theme_override_font_sizes/font_size = 48
 text = "5"
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="JuiceMaster/TargetsLeftLabel"]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="GameCanvasBasic/TargetsLeftLabel"]
 libraries = {
-"": SubResource("AnimationLibrary_3x8qk")
+"": SubResource("AnimationLibrary_ie4r7")
 }
 
-[node name="Label5" type="Label" parent="JuiceMaster"]
+[node name="Label5" type="Label" parent="GameCanvasBasic"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 4.64844
-offset_top = 130.238
-offset_right = 254.648
-offset_bottom = 187.238
+offset_left = 60.0
+offset_top = 17.0
+offset_right = 310.0
+offset_bottom = 74.0
 grow_horizontal = 2
 grow_vertical = 2
-rotation = -0.199057
-theme_override_fonts/font = ExtResource("4_qylyd")
+theme_override_fonts/font = ExtResource("18_fgnhl")
 theme_override_font_sizes/font_size = 48
-text = "TARGETS LEFT"
+text = "targets left"
 
-[node name="Shadow" type="Label" parent="JuiceMaster/Label5"]
-modulate = Color(0, 0, 0, 1)
-show_behind_parent = true
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -2.10531
-offset_top = 2.10014
-offset_right = 247.895
-offset_bottom = 59.1011
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_fonts/font = ExtResource("4_qylyd")
-theme_override_font_sizes/font_size = 48
-text = "TARGETS LEFT"
-
-[node name="Panel" type="Panel" parent="JuiceMaster"]
+[node name="Panel" type="Panel" parent="GameCanvasBasic"]
 visible = false
 anchors_preset = 2
 anchor_top = 1.0
@@ -756,7 +789,7 @@ rotation = -0.141177
 theme_override_styles/panel = SubResource("StyleBoxFlat_hwliu")
 script = ExtResource("4_h46km")
 
-[node name="Panel2" type="Panel" parent="JuiceMaster/Panel"]
+[node name="Panel2" type="Panel" parent="GameCanvasBasic/Panel"]
 show_behind_parent = true
 layout_mode = 1
 anchors_preset = 2
@@ -769,7 +802,7 @@ offset_bottom = 6.0863
 grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_yurmx")
 
-[node name="Label" type="Label" parent="JuiceMaster/Panel"]
+[node name="Label" type="Label" parent="GameCanvasBasic/Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -785,7 +818,7 @@ theme_override_font_sizes/font_size = 28
 text = "0005"
 vertical_alignment = 1
 
-[node name="Label3" type="Label" parent="JuiceMaster/Panel"]
+[node name="Label3" type="Label" parent="GameCanvasBasic/Panel"]
 modulate = Color(0, 0, 0, 1)
 layout_mode = 1
 anchors_preset = 15
@@ -801,7 +834,7 @@ theme_override_fonts/font = ExtResource("4_qylyd")
 theme_override_font_sizes/font_size = 21
 text = "bits"
 
-[node name="Label2" type="Label" parent="JuiceMaster/Panel"]
+[node name="Label2" type="Label" parent="GameCanvasBasic/Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -842,7 +875,7 @@ health = 3
 
 [node name="Target_Big2" parent="." instance=ExtResource("13_u6sis")]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -6.5812, 0.800905, 1.5597)
-health = 10
+health = 5000
 
 [node name="Target" parent="Target_Big2" index="0"]
 transform = Transform3D(1.2, 0, 0, 0, 1.2, 0, 0, 0, 1.2, 0, 0.444345, 0)

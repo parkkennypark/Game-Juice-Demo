@@ -9,13 +9,6 @@ var juice_master : JuiceMaster
 var duck_scene : PackedScene = preload("res://duck_game/DuckGuy.tscn")
 var duck_multiply_particles_scene : PackedScene = preload("res://FireParticles.tscn")
 
-var juice_master_scene : PackedScene = preload("res://JuiceMasterWindow.tscn")
-
-
-func _ready() -> void:
-	get_viewport().set_embedding_subwindows(false)
-	spawn_packed_scene(juice_master_scene, get_tree().root, true)
-	pass
 
 func spawn_packed_scene(packedScene, parent : Node = get_tree().root, deferred = false) -> Node:
 	if packedScene == null:

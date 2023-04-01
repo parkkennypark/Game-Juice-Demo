@@ -1,14 +1,18 @@
+OmniLight3D
+MeshInstance3D
+VBoxContainer
+PanelContainer
+Panel
+ColorRect
+ScrollContainer
 Button
 HBoxContainer
 Label
 MarginContainer
 CheckButton
-VBoxContainer
 RichTextLabel
 TextureRect
 CanvasLayer
-Panel
-ColorRect
 Control
 Window
 AnimationPlayer
@@ -19,7 +23,6 @@ Camera3D
 SubViewport
 SubViewportContainer
 AnimationTree
-OmniLight3D
 Label3D
 FogVolume
 CollisionShape3D
@@ -27,7 +30,3 @@ CharacterBody3D
 RigidBody3D
 DirectionalLight3D
 CSGCylinder3D
-GPUParticlesCollisionBox3D
-Shake
-StaticBody3D
-MeshInstance3D

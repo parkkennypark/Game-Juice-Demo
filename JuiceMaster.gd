@@ -1,12 +1,11 @@
 extends Window
-class_name JuiceMaster
 
 signal something_changed
 
 var options : Dictionary
 
-func _ready() -> void:
-	Global.juice_master = self
+#func _ready() -> void:
+#	Global.set_juice_master(self)
 
 func refresh_game():
 	something_changed.emit()
@@ -14,11 +13,16 @@ func refresh_game():
 func set_toggle(option, value):
 	options[option] = value
 	
-	
 	if option == "colors":
 		ProjectSettings.set("shader_globals/enable_color", value)
 	if option == "wiggle":
 		ProjectSettings.set("shader_globals/wiggle", value)
 	
-	print(ProjectSettings.get("shader_globals/wiggle"))
+	refresh_game()
+
+func get_toggle(option):
+	if options.has(option):
+		return options[option]
 	
+	printerr("No option: ", option)
+	return false

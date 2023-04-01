@@ -14,6 +14,8 @@ uniform float strength = 0.05;
 uniform float fps = 6;
 global uniform sampler2D noise_texture;
 global uniform bool wiggle;
+global uniform bool toon;
+global uniform bool enable_color;
 
 void vertex() {
 	float time = sin(round(TIME * fps));
@@ -30,6 +32,8 @@ void vertex() {
 void fragment() {
 	vec2 base_uv = UV;
 	vec4 albedo_tex = texture(texture_albedo,base_uv);
-	ALBEDO = albedo.rgb * albedo_tex.rgb;
-	ROUGHNESS = roughness;
+	if (enable_color) {
+		ALBEDO = albedo.rgb * albedo_tex.rgb;
+	}
+	ROUGHNESS = toon ? 0.0 : 1.0;
 }
