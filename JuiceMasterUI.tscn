@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://c4wmwra36018r"]
+[gd_scene load_steps=9 format=3 uid="uid://c4wmwra36018r"]
 
 [ext_resource type="FontFile" uid="uid://f1s61kqc4dld" path="res://fonts/RobotoCondensed-Bold.ttf" id="1_4ipv1"]
 [ext_resource type="FontFile" uid="uid://dpac28rujlg6v" path="res://fonts/RobotoCondensed-Italic.ttf" id="2_gh0y3"]
@@ -6,6 +6,25 @@
 [ext_resource type="Script" path="res://JuiceOption.gd" id="4_huhlv"]
 
 [sub_resource type="Theme" id="Theme_75ws1"]
+
+[sub_resource type="GDScript" id="GDScript_m6jo3"]
+script/source = "extends Control
+
+@export var checks_to_batch_toggle : Array[Node]
+
+signal batch_toggle(enabled)
+
+func enable_all():
+	batch_toggle.emit(true)
+#	for check in checks_to_batch_toggle:
+#		check.set_pressed(true)
+
+func disable_all():
+	batch_toggle.emit(false)
+#	for check in checks_to_batch_toggle:
+#		check.set_pressed(false)
+
+"
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_50xf2"]
 
@@ -22,6 +41,7 @@ offset_bottom = 152.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = SubResource("Theme_75ws1")
+script = SubResource("GDScript_m6jo3")
 
 [node name="Panel" type="Panel" parent="."]
 layout_mode = 1
@@ -102,12 +122,6 @@ layout_mode = 2
 theme_override_fonts/font = ExtResource("2_gh0y3")
 theme_override_font_sizes/font_size = 24
 text = "Visuals"
-
-[node name="CheckButton6" type="CheckButton" parent="ScrollContainer/VBoxContainer"]
-layout_mode = 2
-text = "Object Colors"
-script = ExtResource("4_huhlv")
-option_name = "colors"
 
 [node name="CheckButton" type="CheckButton" parent="ScrollContainer/VBoxContainer"]
 layout_mode = 2
@@ -195,6 +209,22 @@ text = "UI Animations"
 script = ExtResource("4_huhlv")
 option_name = "ui_animations"
 
+[node name="MarginContainer6" type="MarginContainer" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 20
+
+[node name="UI2" type="Label" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_gh0y3")
+theme_override_font_sizes/font_size = 24
+text = "Audio"
+
+[node name="CheckButton10" type="CheckButton" parent="ScrollContainer/VBoxContainer"]
+layout_mode = 2
+text = "Sound Effects"
+script = ExtResource("4_huhlv")
+option_name = "sfx"
+
 [node name="MarginContainer5" type="MarginContainer" parent="ScrollContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/margin_top = 20
@@ -235,33 +265,42 @@ layout_mode = 2
 text = "Ambient Occlusion"
 script = ExtResource("4_huhlv")
 option_name = "ambient_occlusion"
+dont_batch_toggle = true
 
 [node name="CheckButton12" type="CheckButton" parent="ScrollContainer/VBoxContainer/Panel/VBoxContainer"]
 layout_mode = 2
 text = "Bloom"
 script = ExtResource("4_huhlv")
 option_name = "bloom"
+dont_batch_toggle = true
 
 [node name="CheckButton13" type="CheckButton" parent="ScrollContainer/VBoxContainer/Panel/VBoxContainer"]
 layout_mode = 2
 text = "High Contrast"
 script = ExtResource("4_huhlv")
 option_name = "high_contrast"
+dont_batch_toggle = true
 
 [node name="CheckButton14" type="CheckButton" parent="ScrollContainer/VBoxContainer/Panel/VBoxContainer"]
 layout_mode = 2
 text = "Fog"
 script = ExtResource("4_huhlv")
 option_name = "fog"
+dont_batch_toggle = true
 
 [node name="CheckButton10" type="CheckButton" parent="ScrollContainer/VBoxContainer/Panel/VBoxContainer"]
 layout_mode = 2
 text = "Transitions"
 script = ExtResource("4_huhlv")
 option_name = "transitions"
+dont_batch_toggle = true
 
 [node name="CheckButton15" type="CheckButton" parent="ScrollContainer/VBoxContainer/Panel/VBoxContainer"]
 layout_mode = 2
 text = "Muzzle Flash Light"
 script = ExtResource("4_huhlv")
 option_name = "muzzle_flash"
+dont_batch_toggle = true
+
+[connection signal="pressed" from="ScrollContainer/VBoxContainer/HBoxContainer/Button" to="." method="enable_all"]
+[connection signal="pressed" from="ScrollContainer/VBoxContainer/HBoxContainer/Button2" to="." method="disable_all"]

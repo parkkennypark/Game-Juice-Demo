@@ -4,8 +4,8 @@
 [ext_resource type="ArrayMesh" uid="uid://dh1ebgux0k3od" path="res://models/target.obj" id="1_pdfwr"]
 [ext_resource type="PackedScene" uid="uid://bxgjdsaiwywxm" path="res://DamageParticles.tscn" id="2_oirm2"]
 [ext_resource type="Shader" path="res://Wiggle.gdshader" id="2_tqxt5"]
-[ext_resource type="AudioStream" uid="uid://bwyrrci1cxbf7" path="res://audio/revolvercock1-6924.mp3" id="3_ifksp"]
-[ext_resource type="AudioStream" uid="uid://q0wpo46n5nmc" path="res://audio/hit-someting-6037.mp3" id="4_he8r3"]
+[ext_resource type="AudioStream" uid="uid://dtexx3t17gwuu" path="res://audio/error_007.ogg" id="3_jx7fk"]
+[ext_resource type="AudioStream" uid="uid://cg8awtjm28dws" path="res://audio/select_004.ogg" id="4_ebf1m"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_28f80"]
 transparency = 1
@@ -109,8 +109,8 @@ collision_layer = 4
 script = ExtResource("1_e7jes")
 health = 1
 damaged_particle_scene = ExtResource("2_oirm2")
-damaged_audio_clip = ExtResource("3_ifksp")
-destroyed_audio_clip = ExtResource("4_he8r3")
+damaged_audio_clip = ExtResource("3_jx7fk")
+destroyed_audio_clip = ExtResource("4_ebf1m")
 
 [node name="Target" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.8, 0, 0, 0, 0.8, 0, 0, 0, 0.8, 0, 0, 0)

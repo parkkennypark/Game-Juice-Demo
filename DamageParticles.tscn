@@ -10,6 +10,7 @@ albedo_color = Color(1, 0.870588, 0.141176, 1)
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j6rbd"]
 render_priority = 1
 transparency = 1
+no_depth_test = true
 emission_enabled = true
 emission = Color(1, 1, 1, 1)
 

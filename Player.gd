@@ -110,7 +110,8 @@ func fire_projectile():
 	if Global.juice_master.get_toggle("knockback"):
 		velocity += -global_transform.basis.z * 10
 	
-	SfxManager.play(1, self, gunshot_clips.pick_random(), 0, randf_range(0.95, 1.05))
+	if Global.juice_master.get_toggle("sfx"):
+		SfxManager.play(1, self, gunshot_clips.pick_random(), 0, randf_range(0.95, 1.05))
 	
 
 func flash_muzzle():

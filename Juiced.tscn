@@ -1,4 +1,4 @@
-[gd_scene load_steps=55 format=3 uid="uid://bpwdnrkmjbvgk"]
+[gd_scene load_steps=56 format=3 uid="uid://bpwdnrkmjbvgk"]
 
 [ext_resource type="Script" path="res://GameManager.gd" id="1_vvsfa"]
 [ext_resource type="Script" path="res://addons/jm_pp_outlines/jm_pp_outlines_camera.gd" id="1_woct7"]
@@ -17,6 +17,7 @@
 [ext_resource type="Script" path="res://GameCanvas.gd" id="11_26e8g"]
 [ext_resource type="PackedScene" uid="uid://cwhdkfjnplw43" path="res://Target.tscn" id="12_ktbdj"]
 [ext_resource type="Material" uid="uid://cqj1c7bv1hqvt" path="res://Wiggle.tres" id="12_v2nkv"]
+[ext_resource type="AudioStream" uid="uid://cg8awtjm28dws" path="res://audio/select_004.ogg" id="13_hdkem"]
 [ext_resource type="PackedScene" uid="uid://pghm3p8iiidf" path="res://Target_Big.tscn" id="13_u6sis"]
 [ext_resource type="Shader" path="res://Wiggle.gdshader" id="13_v73er"]
 [ext_resource type="FontFile" uid="uid://ce636jjvktnop" path="res://fonts/LiberationSans-Regular.ttf" id="18_fgnhl"]
@@ -35,9 +36,7 @@ ambient_light_color = Color(0.478431, 0.835294, 1, 1)
 ssao_intensity = 5.95
 glow_bloom = 0.06
 glow_blend_mode = 1
-volumetric_fog_enabled = true
 volumetric_fog_density = 0.1
-adjustment_enabled = true
 adjustment_contrast = 2.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1fqam"]
@@ -471,6 +470,7 @@ fire_particles_scene = ExtResource("7_ok5w3")
 muzzle_flash_animation_player = NodePath("Model/MuzzleFlash/AnimationPlayer")
 spray = 5.0
 full_auto = true
+gunshot_clips = Array[AudioStream]([ExtResource("13_hdkem")])
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
