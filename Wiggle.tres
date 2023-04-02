@@ -5,7 +5,7 @@
 [resource]
 render_priority = 0
 shader = ExtResource("1_w2h3d")
-shader_parameter/albedo = Color(0.607843, 0.701961, 0.647059, 1)
+shader_parameter/albedo = Color(0.419608, 0.458824, 0.521569, 1)
 shader_parameter/roughness = 0.0
 shader_parameter/uv1_scale = null
 shader_parameter/uv1_offset = null

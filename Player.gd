@@ -12,6 +12,7 @@ var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 @export var spray : float = 10
 @export var full_auto : bool = false
 @export var full_auto_fire_delay : float = 0.1
+@export var gunshot_clips : Array[AudioStream]
 
 var current_fire_delay : float
 
@@ -108,6 +109,8 @@ func fire_projectile():
 		
 	if Global.juice_master.get_toggle("knockback"):
 		velocity += -global_transform.basis.z * 10
+	
+	SfxManager.play(1, self, gunshot_clips.pick_random(), 0, randf_range(0.95, 1.05))
 	
 
 func flash_muzzle():

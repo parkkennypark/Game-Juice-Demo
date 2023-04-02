@@ -2,6 +2,8 @@ extends StaticBody3D
 
 @export var health : int = 3
 @export var damaged_particle_scene : PackedScene
+@export var damaged_audio_clip : AudioStream
+@export var destroyed_audio_clip : AudioStream
 
 signal destroyed
 
@@ -23,6 +25,8 @@ func on_collided():
 		get_tree().root.add_child(particles)
 		particles.global_position = global_position + Global.get_random_pos_in_sphere()
 	
+	SfxManager.play(1, owner, damaged_audio_clip, 0, randf_range(0.95, 1.05))
+	
 	health -= 1
 	
 	if health <= 0:
@@ -35,3 +39,5 @@ func destroy():
 	remove_from_group("Target")
 	destroyed.emit()
 	queue_free()
+	
+	SfxManager.play(1, owner, destroyed_audio_clip, 0, randf_range(0.95, 1.05))
