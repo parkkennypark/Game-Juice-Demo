@@ -17,10 +17,13 @@ func _init() -> void:
 
 func _ready() -> void:
 	get_viewport().set_embedding_subwindows(false)
-	Global.spawn_packed_scene(juice_master_scene, get_tree().root, true)
+	Global.spawn_packed_scene(juice_master_scene, self, true)
 	
 	find_materials()
-	
+
+func _process(delta: float) -> void:
+	if Input.is_action_just_pressed("ui_cancel"):
+		SceneChanger.go_to_scene("res://Juiced.tscn", self)
 
 func find_materials(node = self):
 	if node is MeshInstance3D:

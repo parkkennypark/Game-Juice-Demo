@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Target.gd" id="1_e7jes"]
 [ext_resource type="ArrayMesh" uid="uid://dh1ebgux0k3od" path="res://models/target.obj" id="1_pdfwr"]
-[ext_resource type="PackedScene" uid="uid://bxgjdsaiwywxm" path="res://DamageParticles.tscn" id="2_oirm2"]
+[ext_resource type="PackedScene" uid="uid://dncjpjfnp0f4y" path="res://fx/DamageParticles.tscn" id="2_oirm2"]
 [ext_resource type="Shader" path="res://Wiggle.gdshader" id="2_tqxt5"]
 [ext_resource type="AudioStream" uid="uid://dtexx3t17gwuu" path="res://audio/error_007.ogg" id="3_jx7fk"]
 [ext_resource type="AudioStream" uid="uid://cg8awtjm28dws" path="res://audio/select_004.ogg" id="4_ebf1m"]

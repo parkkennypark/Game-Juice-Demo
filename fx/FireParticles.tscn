@@ -1,6 +1,6 @@
-[gd_scene load_steps=9 format=3 uid="uid://c3eboih70go0h"]
+[gd_scene load_steps=9 format=3]
 
-[ext_resource type="Script" path="res://Particles.gd" id="1_van1u"]
+[ext_resource type="Script" path="res://fx/Particles.gd" id="1_van1u"]
 
 [sub_resource type="Gradient" id="Gradient_fy7h5"]
 colors = PackedColorArray(1, 0.41, 0.41, 1, 1, 1, 1, 1)

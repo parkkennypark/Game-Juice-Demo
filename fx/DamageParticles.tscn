@@ -1,6 +1,6 @@
-[gd_scene load_steps=10 format=3 uid="uid://bxgjdsaiwywxm"]
+[gd_scene load_steps=10 format=3 uid="uid://dncjpjfnp0f4y"]
 
-[ext_resource type="Script" path="res://Particles.gd" id="1_7cdyv"]
+[ext_resource type="Script" path="res://fx/Particles.gd" id="1_k76ye"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_b5m2s"]
 transparency = 1
@@ -161,7 +161,7 @@ _data = {
 
 [node name="DamageParticles" type="Node3D"]
 transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
-script = ExtResource("1_7cdyv")
+script = ExtResource("1_k76ye")
 
 [node name="Node3D5" type="Node3D" parent="."]
 visible = false

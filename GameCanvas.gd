@@ -19,8 +19,8 @@ func get_targets_left():
 
 func on_target_destroyed():
 	update_target_left_label()
-	if get_targets_left() == 0:
-		SceneChanger.go_to_scene("res://Juiced.tscn", owner)
+#	if get_targets_left() == 0:
+#		SceneChanger.go_to_scene("res://Juiced.tscn", owner)
 
 func update_target_left_label():
 	var targets_left = get_targets_left()

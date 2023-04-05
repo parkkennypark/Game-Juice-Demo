@@ -1,7 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://dec2ks1v1mjr2"]
+[gd_scene load_steps=6 format=3 uid="uid://da4k4tv7uhaka"]
 
 [ext_resource type="Script" path="res://Bullet.gd" id="1_fhddf"]
-[ext_resource type="PackedScene" uid="uid://c3eboih70go0h" path="res://FireParticles.tscn" id="2_u1w6l"]
+[ext_resource type="PackedScene" path="res://fx/FireParticles.tscn" id="2_mqb6h"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_0x34w"]
 radius = 0.449
@@ -25,7 +25,7 @@ emission_energy_multiplier = 0.89
 collision_layer = 0
 collision_mask = 5
 script = ExtResource("1_fhddf")
-collided_particle_scene = ExtResource("2_u1w6l")
+collided_particle_scene = ExtResource("2_mqb6h")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("SphereShape3D_0x34w")

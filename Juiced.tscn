@@ -1,4 +1,4 @@
-[gd_scene load_steps=56 format=3 uid="uid://bpwdnrkmjbvgk"]
+[gd_scene load_steps=56 format=3 uid="uid://c23u5cib20oy7"]
 
 [ext_resource type="Script" path="res://GameManager.gd" id="1_vvsfa"]
 [ext_resource type="Script" path="res://addons/jm_pp_outlines/jm_pp_outlines_camera.gd" id="1_woct7"]
@@ -11,13 +11,13 @@
 [ext_resource type="FontFile" uid="uid://dpac28rujlg6v" path="res://fonts/RobotoCondensed-Italic.ttf" id="4_qylyd"]
 [ext_resource type="PackedScene" uid="uid://mkh7y7yikxqm" path="res://addons/post_processing_tool/PostProcessing_tool.tscn" id="5_c0l1v"]
 [ext_resource type="Texture2D" uid="uid://ci6eco0stogau" path="res://Dash.png" id="6_m0w5b"]
-[ext_resource type="PackedScene" uid="uid://dec2ks1v1mjr2" path="res://Bullet.tscn" id="6_u1ylt"]
-[ext_resource type="PackedScene" uid="uid://c3eboih70go0h" path="res://FireParticles.tscn" id="7_ok5w3"]
+[ext_resource type="PackedScene" uid="uid://da4k4tv7uhaka" path="res://Bullet.tscn" id="6_u1ylt"]
 [ext_resource type="Shader" path="res://NoToon.gdshader" id="10_kw4cm"]
+[ext_resource type="PackedScene" path="res://fx/FireParticles.tscn" id="10_uwl1c"]
+[ext_resource type="AudioStream" uid="uid://7m3006x6t7aa" path="res://audio/layered_makarov.ogg" id="11_5ctk0"]
 [ext_resource type="Script" path="res://GameCanvas.gd" id="11_26e8g"]
 [ext_resource type="PackedScene" uid="uid://cwhdkfjnplw43" path="res://Target.tscn" id="12_ktbdj"]
 [ext_resource type="Material" uid="uid://cqj1c7bv1hqvt" path="res://Wiggle.tres" id="12_v2nkv"]
-[ext_resource type="AudioStream" uid="uid://cg8awtjm28dws" path="res://audio/select_004.ogg" id="13_hdkem"]
 [ext_resource type="PackedScene" uid="uid://pghm3p8iiidf" path="res://Target_Big.tscn" id="13_u6sis"]
 [ext_resource type="Shader" path="res://Wiggle.gdshader" id="13_v73er"]
 [ext_resource type="FontFile" uid="uid://ce636jjvktnop" path="res://fonts/LiberationSans-Regular.ttf" id="18_fgnhl"]
@@ -466,11 +466,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.38419e-07, 0)
 collision_layer = 2
 script = ExtResource("3_xbg1g")
 projectile_scene = ExtResource("6_u1ylt")
-fire_particles_scene = ExtResource("7_ok5w3")
+fire_particles_scene = ExtResource("10_uwl1c")
 muzzle_flash_animation_player = NodePath("Model/MuzzleFlash/AnimationPlayer")
 spray = 5.0
 full_auto = true
-gunshot_clips = Array[AudioStream]([ExtResource("13_hdkem")])
+gunshot_clips = Array[AudioStream]([ExtResource("11_5ctk0")])
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)

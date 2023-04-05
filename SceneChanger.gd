@@ -25,7 +25,7 @@ func go_to_scene(path, currentRoot):
 
 #	BgmManager._fade_out()
 
-	await get_tree().create_timer(3).timeout
+	await get_tree().create_timer(1).timeout
 
 	var scene = load(path)
 	if scene == null:
@@ -33,8 +33,8 @@ func go_to_scene(path, currentRoot):
 
 	currentRoot.queue_free()
 
-	Global.spawn_packed_scene(scene)
 	await get_tree().process_frame
+	Global.spawn_packed_scene(scene)
 
 #	emit_signal("entered_game_area", game_area)
 	emit_signal("scene_changed")

@@ -108,7 +108,7 @@ anchor_right = 0.5
 offset_left = -175.0
 offset_top = 98.0
 offset_right = 176.0
-offset_bottom = 760.0
+offset_bottom = 781.0
 grow_horizontal = 2
 horizontal_scroll_mode = 3
 vertical_scroll_mode = 3
@@ -182,6 +182,7 @@ script = ExtResource("4_huhlv")
 option_name = "shake"
 
 [node name="CheckButton9" type="CheckButton" parent="ScrollContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 text = "Target Flash on Hit"
 script = ExtResource("4_huhlv")
@@ -289,6 +290,7 @@ option_name = "fog"
 dont_batch_toggle = true
 
 [node name="CheckButton10" type="CheckButton" parent="ScrollContainer/VBoxContainer/Panel/VBoxContainer"]
+visible = false
 layout_mode = 2
 text = "Transitions"
 script = ExtResource("4_huhlv")

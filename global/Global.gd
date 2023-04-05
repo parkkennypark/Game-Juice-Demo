@@ -7,7 +7,7 @@ var player
 var juice_master : JuiceMaster
 
 var duck_scene : PackedScene = preload("res://duck_game/DuckGuy.tscn")
-var duck_multiply_particles_scene : PackedScene = preload("res://FireParticles.tscn")
+var duck_multiply_particles_scene : PackedScene = preload("res://fx/FireParticles.tscn")
 
 
 func spawn_packed_scene(packedScene, parent : Node = get_tree().root, deferred = false) -> Node:
